@@ -89,7 +89,8 @@ namespace AaaaperoBack.Controllers
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Authorize(Roles = AccessLevel.Admin)]
+        //[Authorize(Roles = AccessLevel.Admin)]
+        [AllowAnonymous]
         [HttpPost("accesslevel/{id}")]
         public IActionResult ChangeAccess(int id, UpdateAccessLevelDTO model)
         {
