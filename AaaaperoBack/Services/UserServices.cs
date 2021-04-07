@@ -31,7 +31,13 @@ namespace AaaaperoBack.Services
             _context = context;
             _emailService = emailService;
         }
-
+        
+        /// <summary>
+        /// Authenticate the user, if it exists
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public User Authenticate(string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
@@ -54,17 +60,33 @@ namespace AaaaperoBack.Services
             }
             return user;        
         }
-
+        
+        /// <summary>
+        /// Show all the users' data
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<User> GetAll()
         {
             return _context.User;
         }
-
+        
+        /// <summary>
+        /// Show the selected user's data
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public User GetById(int id)
         {
             return _context.User.Find(id);
         }
-
+        
+        /// <summary>
+        /// Create a new User
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        /// <exception cref="AppException"></exception>
         public User Create(User user, string password)
         {
             // validation
@@ -87,7 +109,15 @@ namespace AaaaperoBack.Services
 
             return user;
         }
-
+        
+        /// <summary>
+        /// Update the user's informations
+        /// </summary>
+        /// <param name="userParam"></param>
+        /// <param name="currentPassword"></param>
+        /// <param name="password"></param>
+        /// <param name="confirmPassword"></param>
+        /// <exception cref="AppException"></exception>
         public void Update(User userParam, string currentPassword = null, string password = null, string confirmPassword = null)
         {
             //Find the user by Id
@@ -142,7 +172,11 @@ namespace AaaaperoBack.Services
             _context.User.Update(user);
             _context.SaveChanges();
         }
-
+        
+        /// <summary>
+        /// Delete the selected User
+        /// </summary>
+        /// <param name="id"></param>
         public void Delete(int id)
         {
             var user = _context.User.Find(id);
@@ -152,7 +186,12 @@ namespace AaaaperoBack.Services
                 _context.SaveChanges();
             }
         }
-
+        
+        /// <summary>
+        /// Create a password hash
+        /// </summary>
+        /// <param name="Password"></param>
+        /// <returns></returns>
         private static string computeHash(string Password)
         {
             MD5 md5 = new MD5CryptoServiceProvider();
@@ -164,7 +203,13 @@ namespace AaaaperoBack.Services
             } 
             return hashstring;
         }
-
+        
+        /// <summary>
+        /// Allow the user, if it exists, to receive an email to reset its password.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        /// <exception cref="AppException"></exception>
         public string ForgotPassword(string username)
         {
             if(string.IsNullOrEmpty(username))
@@ -195,7 +240,16 @@ namespace AaaaperoBack.Services
                 return new string("If your account exists, your new password will be emailed to you shortly");
             }
         }
-
+        
+        /// <summary>
+        /// Allow reset password.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="currentPassword"></param>
+        /// <param name="password"></param>
+        /// <param name="confirmPassword"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public User ResetPassword(string username, string currentPassword, string password, string confirmPassword)
         {
             throw new NotImplementedException();
