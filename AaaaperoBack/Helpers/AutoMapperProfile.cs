@@ -1,9 +1,8 @@
 using AaaaperoBack.DTO;
 using AaaaperoBack.Models;
 using AutoMapper;
-using DTO;
 
-namespace Helpers
+namespace AaaaperoBack.Helpers
 {
     public class AutoMapperProfile : Profile
     {

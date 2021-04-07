@@ -11,10 +11,10 @@ using Microsoft.Extensions.Configuration;
 using AutoMapper;
 
 using AaaaperoBack.Data;
+using AaaaperoBack.DTO;
+using AaaaperoBack.Helpers;
 using AaaaperoBack.Models;
-using DTO;
-using Helpers;
-using Services;
+using AaaaperoBack.Services;
 
 namespace AaaaperoBack.Controllers
 {

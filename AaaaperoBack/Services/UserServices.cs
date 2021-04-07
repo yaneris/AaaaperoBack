@@ -4,12 +4,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using AaaaperoBack.Data;
+using AaaaperoBack.Helpers;
 using AaaaperoBack.Models;
-using Helpers;
-using AaaaperoBack.Models;
-using AaaaperoBack.Data;
 
-namespace Services
+namespace AaaaperoBack.Services
 {
     public interface IUserService
     {

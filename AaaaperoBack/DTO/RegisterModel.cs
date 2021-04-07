@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace DTO
+namespace AaaaperoBack.DTO
 {
     public class RegisterModel
     {
@@ -9,6 +9,9 @@ namespace DTO
 
         [Required]
         public string LastName { get; set; }
+        
+        [Required]
+        public string Field { get; set; }
 
         [Required]
         public string Username { get; set; }
