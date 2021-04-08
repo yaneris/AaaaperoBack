@@ -324,5 +324,18 @@ namespace AaaaperoBack.Controllers
             }
             return NoContent();
         }
+
+        [Authorize]
+        [HttpPost("Bump")]
+        public async Task<IActionResult> Bump()
+        {
+            int loggedUserId = int.Parse(User.Identity.Name);
+            var user = _context.User.Find(loggedUserId);
+
+            user.Premium = true;
+            await _context.SaveChangesAsync();
+
+            return Ok("Account successfully bumped !");
+        }
     }
 }

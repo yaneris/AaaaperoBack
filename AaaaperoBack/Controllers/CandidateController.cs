@@ -93,6 +93,8 @@ namespace AaaaperoBack.Controllers
                     Available = candidate.Available,
                     Description = candidate.Description
                 };
+
+                var candidatesList = _context.User.ToList().OrderBy(x => x.Premium == true);
             return Ok(candidates);
         }
     }
