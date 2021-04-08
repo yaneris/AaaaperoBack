@@ -1,22 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AaaaperoBack.Models
+namespace AaaaperoBack.DTO
 {
-    // Jobs shown in the employer page. Can be advertised if employer pays premium fee
-    public class Job
+    public class AddJob
     {
-        [Key]
-        public int Id { get; set; }
+        [Required]
         public int EmployerId { get; set; }
+        [Required]
         public string Title { get; set; }
+        [Required]
         public string Description { get; set; }
+        [Required]
         public int Remuneration { get; set; }
-        
         public bool PremiumAdvertisement { get; set; }
-
-        public Job()
-        {
-            PremiumAdvertisement = false;
-        }
     }
 }

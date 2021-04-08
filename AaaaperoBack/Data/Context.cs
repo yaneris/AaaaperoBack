@@ -15,5 +15,7 @@ namespace AaaaperoBack.Data
         public DbSet<Message> Message { get; set; }
         
         public DbSet<Conversation> Conversation { get; set; }
+        
+        public DbSet<Job> Job { get; set; }
     }
 }
