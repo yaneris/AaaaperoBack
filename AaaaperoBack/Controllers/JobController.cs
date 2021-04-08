@@ -98,7 +98,22 @@ namespace AaaaperoBack.Controllers
             return CreatedAtAction("GetJob", new { id = job.Id}, jobDTO);
         }
 
-     
+        [AllowAnonymous]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Job>> Delete_Job(int id)
+        {
+            var job = _context.Job.Find(id);
+            if (job == null)
+            {
+                return NotFound();
+            }
+            else 
+            {
+                _context.Remove(job);
+                await _context.SaveChangesAsync();
+                return job;
+            }
+        }
 
     }
 }
