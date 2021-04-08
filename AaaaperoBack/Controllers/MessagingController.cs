@@ -26,6 +26,40 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
+        /// Start a new Conversation
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("StartConversation")]
+        public IActionResult StartConversation(int id)
+        {
+            int loggedUserId = int.Parse(User.Identity.Name);
+            var user = _context.User.Find(loggedUserId);
+            switch (user.Role)
+            { 
+                case Role.Employer:
+                    var employer = _context.Employer.SingleOrDefault(x => x.UserId == user.Id);
+                    Conversation EmployerConversation = new Conversation();
+                    EmployerConversation.EmployerId = employer.Id;
+                    EmployerConversation.CandidateId = id;
+                    _context.Conversation.Add(EmployerConversation);
+                    _context.SaveChanges();
+                    return Ok($"Conversation Succesfully created:{EmployerConversation.Id}");
+                case Role.Candidate:
+                    var candidate = _context.Candidate.SingleOrDefault(x => x.UserId == user.Id);
+                    Conversation CandidateConversation = new Conversation();
+                    CandidateConversation.CandidateId = candidate.Id;
+                    CandidateConversation.EmployerId = id;
+                    _context.Conversation.Add(CandidateConversation);
+                    _context.SaveChanges();
+                    return Ok($"Conversation Succesfully created:{CandidateConversation.Id}");
+                default:
+                    return BadRequest();
+            }
+        }
+        
+        /// <summary>
         /// Send a message
         /// </summary>
         /// <param name="messageDTO"></param>
@@ -49,7 +83,8 @@ namespace AaaaperoBack.Controllers
                     {
                         IsSenderEmployer = true,
                         Content = messageDTO.Content,
-                        ConversationId = messageDTO.ConversationId
+                        ConversationId = messageDTO.ConversationId,
+                        CreatedDate = DateTime.UtcNow
                     };
                     _context.Message.Add(employerMessage);
                     _context.SaveChanges();
@@ -65,7 +100,8 @@ namespace AaaaperoBack.Controllers
                     {
                         IsSenderEmployer = false,
                         Content = messageDTO.Content,
-                        ConversationId = messageDTO.ConversationId
+                        ConversationId = messageDTO.ConversationId,
+                        CreatedDate = DateTime.UtcNow
                     };
                     _context.Message.Add(candidateMessage);
                     _context.SaveChanges();
@@ -88,30 +124,40 @@ namespace AaaaperoBack.Controllers
             int loggedUserId = int.Parse(User.Identity.Name);
             var user = _context.User.Find(loggedUserId);
             
-            if (user.Id != _context.Conversation.Find(id).CandidateId && user.Id != _context.Conversation.Find(id).EmployerId && user.Role != Role.Admin)
+            /*if (user.Id != _context.Conversation.Find(id).CandidateId && user.Id != _context.Conversation.Find(id).EmployerId && user.Role != Role.Admin)
             {
                 return BadRequest("Unauthorize");
-            }
-            var conversations = from conversation in _context.Conversation
-                join Message in _context.Message on conversation.Id equals Message.ConversationId
-                select new ConversationDTO()
+            }*/
+
+            var conversations = _context.Conversation;
+            var conversation = conversations.SingleOrDefault(x => x.Id == id);
+            if (conversation == null)
+                return NotFound();
+
+            var employer = _context.Employer.Find(conversation.EmployerId);
+            var employerUser = _context.User.Find(employer.UserId);
+            var candidate = _context.Candidate.Find(conversation.CandidateId);
+            var candidateUser = _context.User.Find(candidate.UserId);
+            var messages = _context.Message.ToList().FindAll(x => x.ConversationId == id);
+
+            var conversationById = new ConversationDTO()
                 {
-                    Id = id,
+                    Id = conversation.Id,
                     EmployerId = conversation.EmployerId,
+                    EmployerName = employerUser.FirstName,
                     CandidateId = conversation.CandidateId,
-                    Messages = conversation.Messages
+                    CandidateName = candidateUser.FirstName,
+                    Messages = messages
                 };
 
-            var conversation_byId = conversations.ToList().Find(x => x.Id == id);
-
-            if (conversation_byId == null)
-            {
-                return BadRequest();
-            }
-
-            return conversation_byId;
+            return conversationById;
         }
         
+        /// <summary>
+        /// Delete a conversation
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.Admin)]
         [HttpDelete("DeleteConversation{id}")]
         public IActionResult Delete_Conversation(int id)

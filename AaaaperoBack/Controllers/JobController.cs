@@ -96,7 +96,6 @@ namespace AaaaperoBack.Controllers
 
             var job = new Job()
             {
-                Id = jobDTO.Id,
                 EmployerId = jobDTO.EmployerId,
                 Title = jobDTO.Title,
                 Description = jobDTO.Description,

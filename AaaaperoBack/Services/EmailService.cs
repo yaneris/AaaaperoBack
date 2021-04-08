@@ -28,8 +28,9 @@ namespace AaaaperoBack.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                // you will need your own email address here which has been added in sendgrid as an authorized sender
-                From = new EmailAddress("your email", "Dorset College"),
+                // my email address that had been added in sendgrid as an authorized sender
+                
+                From = new EmailAddress("viteltoosus@hotmail.com", "Dorset College"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message

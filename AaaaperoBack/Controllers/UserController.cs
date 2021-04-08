@@ -121,7 +121,8 @@ namespace AaaaperoBack.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    Token = tokenString
+                    Token = tokenString,
+                    Code = tokenString
                 });
             }
             catch (AppException ex)
@@ -185,36 +186,16 @@ namespace AaaaperoBack.Controllers
                 Token = tokenString
             });
         }
+        
 
         /// <summary>
-        /// Change the AccessLevel of a user.
+        /// Display profile
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin)]
-        [HttpPost("Accesslevel/{id}")]
-        public IActionResult ChangeAccess(int id, UpdateRoleDTO model)
-        {
-            // You should check if the user exists or not and then check what is their current access level.
-            _context.User.Find(id).Role = model.Role;
-            _context.SaveChanges();
-            return Ok("User Access Level has been updated!");
-        }
-
-        [Authorize(Roles = Role.Admin)]
-        [HttpGet("Users")]
-        public IActionResult GetAllUsers()
-        {
-            var users = _userService.GetAll();
-            var model = _mapper.Map<IList<UserModel>>(users);
-            return Ok(model);
-        }
-
-        //[Authorize(Roles = AccessLevel.Admin + "," + AccessLevel.Candidate + "," + AccessLevel.Employer)]
-        [AllowAnonymous]
-        [HttpPut("Myprofile")]
-        public async Task<ActionResult> GetMyProfile(UpdateUserDTO model)
+        [Authorize]
+        [HttpPut("UpdateMyprofile")]
+        public async Task<ActionResult> UpdateMyProfile(UpdateUserDTO model)
         {
             int loggedUserId = int.Parse(User.Identity.Name);
             var user = _context.User.Find(loggedUserId);
@@ -249,7 +230,7 @@ namespace AaaaperoBack.Controllers
                     await _context.SaveChangesAsync();
                     return Ok(candidate);
                 case Role.Employer:
-                    var employer = new EmployerDTO
+                    var employer = new EmployersDTO
                     {
                         FirstName = model.FirstName,
                         LastName = model.LastName,
@@ -287,123 +268,61 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Restore the given deleted user
+        /// Display profile
         /// </summary>
-        /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin)]
-        [HttpPost("Restore_Account/{id}")]
-        public IActionResult Restore(int id)
+        [Authorize]
+        [HttpGet("GetMyprofile")]
+        public ActionResult GetMyProfile()
         {
-            var user = _userService.GetById(id);
-            _context.User.Find(id).IsEnabled = true;
-            _context.SaveChanges();
-            return Ok($"User {user.Username} account has been succefully enabled");
-        }
+            int loggedUserId = int.Parse(User.Identity.Name);
+            var user = _context.User.Find(loggedUserId);
 
-        /// <summary>
-        /// Disable the given admin
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [Authorize(Roles = Role.SuperUser)]
-        [HttpPost("Disable_admin_Account/{id}")]
-        public IActionResult AdminDisable(int id)
-        {
-            var user = _userService.GetById(id);
-            _context.User.Find(id).IsEnabled = false;
-            _context.SaveChanges();
-            return Ok($"{user.Username} account has been succefully disabled");
-        }
-
-        [Authorize(Roles = Role.Employer + "," + Role.Admin)]
-        [HttpGet("Candidates")]
-        public List<CandidateDTO> GetCandidates()
-        {
-            var users = _userService.GetAll();
-            var candidates = new List<CandidateDTO>();
-            foreach (var user in users)
+            if (loggedUserId != user.Id)
             {
-                if (user.Role == "Candidate")
-                {
-                    var canDB = _context.Candidate.SingleOrDefault(x => x.UserId == user.Id);
+                return BadRequest(new { message = "Access Denied" });
+            }
+            switch (user.Role)
+            {
+                case Role.Candidate:
+                    var candidateDB = _context.User.Find(loggedUserId);
+                    var candidateDBcan = _context.Candidate.SingleOrDefault(x => x.UserId == loggedUserId);
                     var candidate = new CandidateDTO
                     {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Username = user.Username,
-                        Email = user.Email,
-                        Skillset = canDB.Skillset,
-                        Available = canDB.Available,
-                        Description = canDB.Description
-                        
+                        FirstName = candidateDB.FirstName,
+                        LastName = candidateDB.LastName,
+                        Username = candidateDB.Username,
+                        Email = candidateDB.Email,
+                        Skillset = candidateDBcan.Skillset,
+                        Available = candidateDBcan.Available,
+                        Description = candidateDBcan.Description
                     };
-
-                    candidates.Add(candidate);
-                }
-            }
-            return (candidates);
-        }
-
-        [Authorize(Roles = Role.Candidate + "," + Role.Admin)]
-        [HttpGet("Employers")]
-        public List<EmployerDTO> GetEmployers()
-        {
-            var users = _userService.GetAll();
-            var employers = new List<EmployerDTO>();
-            foreach (var user in users)
-            {
-                if (user.Role == "Employer")
-                {
-                    var empDB = _context.Employer.SingleOrDefault(x => x.UserId == user.Id);
-                    var employer = new EmployerDTO()
+                    return Ok(candidate);
+                case Role.Employer:
+                    var employerDB = _context.User.Find(loggedUserId);
+                    var employerDBemp = _context.Employer.SingleOrDefault(x => x.UserId == loggedUserId);
+                    var employer = new EmployersDTO
                     {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Username = user.Username,
-                        Email = user.Email,
-                        Description = empDB.Description
-                        //ADD JOB !!!
+                        FirstName = employerDB.FirstName,
+                        LastName = employerDB.LastName,
+                        Username = employerDB.Username,
+                        Email = employerDB.Email,
+                        Description = employerDBemp.Description
+
                     };
-
-                    employers.Add(employer);
-                }
+                    return Ok(employer);
+                case Role.Admin:
+                var adminDB = _context.User.Find(loggedUserId);
+                    var admin = new UpdateAdminDTO
+                    {
+                        FirstName = adminDB.FirstName,
+                        LastName = adminDB.LastName,
+                        Username = adminDB.Username,
+                        Email = adminDB.Email
+                    };
+                return Ok(admin);
             }
-            return(employers);
+            return NoContent();
         }
-            
-
-    /// <summary>
-    /// Disable the given user
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [Authorize(Roles = Role.Admin)]
-    [HttpPost("Disable_normalAccount/{id}")]
-    public IActionResult Disable(int id)
-    {
-        var user = _userService.GetById(id);
-        if (user.Role != Role.Admin)
-        {
-            _context.User.Find(id).IsEnabled = false;
-            _context.SaveChanges();
-            return Ok($"{user.Username} account has been succefully disabled");
-        }
-        return BadRequest($"{user.Username} is an Admin !");
     }
-
-    /// <summary>
-    /// Hard Delete the given user
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [Authorize(Roles = Role.Admin)]
-    [HttpDelete("Hard_Delete_Account/{id}")]
-    public IActionResult HardDelete(int id)
-    {
-        var user = _userService.GetById(id);
-        _userService.Delete(id);
-        return Ok($"{user.Username} account has been succefully deleted from the database");
-    }
-}
 }
