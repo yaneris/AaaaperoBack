@@ -126,11 +126,14 @@ namespace AaaaperoBack.Controllers
             }
             var conversations = from conversation in _context.Conversation
                 join Message in _context.Message on conversation.Id equals Message.ConversationId
+                join candidate in _context.User on conversation.CandidateId equals candidate.Id
                 select new ConversationDTO()
                 {
                     Id = id,
                     EmployerId = conversation.EmployerId,
+                    EmployerName = user.FirstName,
                     CandidateId = conversation.CandidateId,
+                    CandidateName = candidate.FirstName,
                     Messages = conversation.Messages
                 };
 
