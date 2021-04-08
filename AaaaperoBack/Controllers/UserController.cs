@@ -193,10 +193,9 @@ namespace AaaaperoBack.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        //[Authorize(Roles = AccessLevel.Admin + "," + AccessLevel.Candidate + "," + AccessLevel.Employer)]
         [Authorize]
-        [HttpPut("Myprofile")]
-        public async Task<ActionResult> GetMyProfile(UpdateUserDTO model)
+        [HttpPut("UpdateMyprofile")]
+        public async Task<ActionResult> UpdateMyProfile(UpdateUserDTO model)
         {
             int loggedUserId = int.Parse(User.Identity.Name);
             var user = _context.User.Find(loggedUserId);
@@ -264,6 +263,64 @@ namespace AaaaperoBack.Controllers
                     adminDB.Email = admin.Username;
                     await _context.SaveChangesAsync();
                     return Ok(admin);
+            }
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Display profile
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("GetMyprofile")]
+        public ActionResult GetMyProfile()
+        {
+            int loggedUserId = int.Parse(User.Identity.Name);
+            var user = _context.User.Find(loggedUserId);
+
+            if (loggedUserId != user.Id)
+            {
+                return BadRequest(new { message = "Access Denied" });
+            }
+            switch (user.Role)
+            {
+                case Role.Candidate:
+                    var candidateDB = _context.User.Find(loggedUserId);
+                    var candidateDBcan = _context.Candidate.SingleOrDefault(x => x.UserId == loggedUserId);
+                    var candidate = new CandidateDTO
+                    {
+                        FirstName = candidateDB.FirstName,
+                        LastName = candidateDB.LastName,
+                        Username = candidateDB.Username,
+                        Email = candidateDB.Email,
+                        Skillset = candidateDBcan.Skillset,
+                        Available = candidateDBcan.Available,
+                        Description = candidateDBcan.Description
+                    };
+                    return Ok(candidate);
+                case Role.Employer:
+                    var employerDB = _context.User.Find(loggedUserId);
+                    var employerDBemp = _context.Employer.SingleOrDefault(x => x.UserId == loggedUserId);
+                    var employer = new EmployersDTO
+                    {
+                        FirstName = employerDB.FirstName,
+                        LastName = employerDB.LastName,
+                        Username = employerDB.Username,
+                        Email = employerDB.Email,
+                        Description = employerDBemp.Description
+
+                    };
+                    return Ok(employer);
+                case Role.Admin:
+                var adminDB = _context.User.Find(loggedUserId);
+                    var admin = new UpdateAdminDTO
+                    {
+                        FirstName = adminDB.FirstName,
+                        LastName = adminDB.LastName,
+                        Username = adminDB.Username,
+                        Email = adminDB.Email
+                    };
+                return Ok(admin);
             }
             return NoContent();
         }
