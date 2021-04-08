@@ -9,6 +9,7 @@ namespace AaaaperoBack.Models
         public int EmployerId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public int Remuneration { get; set; }
         
         public bool PremiumAdvertisement { get; set; }
     }
