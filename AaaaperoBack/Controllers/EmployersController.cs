@@ -39,7 +39,7 @@ namespace AaaaperoBack.Controllers
         /// Display Employers
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Role.Candidate + "," + Role.Admin)]
+        [Authorize]
         [HttpGet()]
         public ActionResult<EmployersDTO> GetEmployers()
         {
@@ -54,6 +54,9 @@ namespace AaaaperoBack.Controllers
                     Email = user.Email,
                     Description = employer.Description
                 };
+
+            var employersList = _context.User.ToList().OrderBy(x => x.Premium == true);
+            
             return Ok(employers);
         }
         
@@ -73,7 +76,7 @@ namespace AaaaperoBack.Controllers
                 return NotFound();
             }
             var user = _context.User.Find(employer.UserId);
-            var jobs = _context.Job.ToList().FindAll(x => x.EmployerId == id).OrderBy(x => !x.PremiumAdvertisement).ToList();
+            var jobs = _context.Job.ToList().FindAll(x => x.EmployerId == id).ToList();
 
             var employerById = new EmployerDTO()
             {

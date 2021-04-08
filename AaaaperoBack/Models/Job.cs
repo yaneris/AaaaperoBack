@@ -13,11 +13,5 @@ namespace AaaaperoBack.Models
         public string Description { get; set; }
         public int Remuneration { get; set; }
         
-        public bool PremiumAdvertisement { get; set; }
-
-        public Job()
-        {
-            PremiumAdvertisement = false;
-        }
     }
 }

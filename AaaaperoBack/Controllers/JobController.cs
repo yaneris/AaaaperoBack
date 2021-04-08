@@ -42,7 +42,6 @@ namespace AaaaperoBack.Controllers
                     Title = jobs.Title,
                     Remuneration = jobs.Remuneration,
                     EmployerId = jobs.EmployerId,
-                    PremiumAdvertisement = jobs.PremiumAdvertisement,
                     Description = jobs.Description
                 };
 
@@ -66,7 +65,6 @@ namespace AaaaperoBack.Controllers
                      Title = jobs.Title,
                      Remuneration = jobs.Remuneration,
                      EmployerId = jobs.EmployerId,
-                     PremiumAdvertisement = jobs.PremiumAdvertisement,
                      Description = jobs.Description
                  };
 
@@ -100,7 +98,6 @@ namespace AaaaperoBack.Controllers
                 Title = jobDTO.Title,
                 Description = jobDTO.Description,
                 Remuneration = jobDTO.Remuneration,
-                PremiumAdvertisement = jobDTO.PremiumAdvertisement
             };
             await _context.Job.AddAsync(job);
             await _context.SaveChangesAsync();
@@ -150,7 +147,6 @@ namespace AaaaperoBack.Controllers
                 jobs.Title = job.Title;
                 jobs.Remuneration = job.Remuneration;
                 jobs.EmployerId = job.EmployerId;
-                jobs.PremiumAdvertisement = job.PremiumAdvertisement;
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
