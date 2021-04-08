@@ -25,6 +25,33 @@ namespace AaaaperoBack.Controllers
             _context = context;
         }
         
+        [Authorize]
+        [HttpPost("StartConversation")]
+        public IActionResult StartConversation(int id)
+        {
+            int loggedUserId = int.Parse(User.Identity.Name);
+            var user = _context.User.Find(loggedUserId);
+            switch (user.Role)
+            {
+                case Role.Employer:
+                    Conversation EmployerConversation = new Conversation();
+                    EmployerConversation.EmployerId = user.Id;
+                    EmployerConversation.CandidateId = id;
+                    _context.Conversation.Add(EmployerConversation);
+                    _context.SaveChanges();
+                    return Ok($"Conversation Succesfully created:{EmployerConversation.Id}");
+                case Role.Candidate:
+                    Conversation CandidateConversation = new Conversation();
+                    CandidateConversation.CandidateId = user.Id;
+                    CandidateConversation.EmployerId = id;
+                    _context.Conversation.Add(CandidateConversation);
+                    _context.SaveChanges();
+                    return Ok($"Conversation Succesfully created:{CandidateConversation.Id}");
+                default:
+                    return BadRequest();
+            }
+        }
+        
         /// <summary>
         /// Send a message
         /// </summary>
@@ -112,6 +139,11 @@ namespace AaaaperoBack.Controllers
             return conversation_byId;
         }
         
+        /// <summary>
+        /// Delete a conversation
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.Admin)]
         [HttpDelete("DeleteConversation{id}")]
         public IActionResult Delete_Conversation(int id)
