@@ -171,11 +171,30 @@ namespace AaaaperoBack.Controllers
             return Ok(model);
         }
 
-        [Authorize(Roles = AccessLevel.Employer)]
-        [HttpGet]
-        public IActionResult GetCandidates()
+        [Authorize(Roles = AccessLevel.Employer + "," + AccessLevel.Admin)]
+        
+        [HttpGet("Candidates")]
+        public List<CandidateDTO> GetCandidates()
         {
+            var users = _userService.GetAll();
+            var candidates = new List<CandidateDTO>();
+            foreach(var user in users)
+            {
+                if(user.Field == "Candidate")
+                {
+                    var candidate = new CandidateDTO
+                    {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        email = null,
+                        skillset = null,
+                        availability = true
+                    };
 
+                    candidates.Add(candidate);
+                }
+            }
+            return(candidates);
         }
     }
 }
