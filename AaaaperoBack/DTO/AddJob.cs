@@ -5,8 +5,6 @@ namespace AaaaperoBack.DTO
     public class AddJob
     {
         [Required]
-        public int Id { get; set; }
-        [Required]
         public int EmployerId { get; set; }
         [Required]
         public string Title { get; set; }
