@@ -93,12 +93,14 @@ namespace AaaaperoBack
                     Version= "v1",   
                     Title = "Dorset College API",  
                     Description="ASP.NET Core 3.1 Web API Documentaion" 
+                    
                 });
+                
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 swagger.IncludeXmlComments(xmlPath);
-                
+
                 // To Enable authorization using Swagger (JWT)  
                 swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()  
                 {  
@@ -123,6 +125,7 @@ namespace AaaaperoBack
                         new string[] {}  
                     }  
                 });  
+                swagger.EnableAnnotations();
             });  
         }
 

@@ -16,6 +16,7 @@ using AaaaperoBack.Helpers;
 using AaaaperoBack.Models;
 using AaaaperoBack.Services;
 using System.Collections.Generic;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace AaaaperoBack.Controllers
 {
@@ -130,6 +131,7 @@ namespace AaaaperoBack.Controllers
         /// </remarks>
         [AllowAnonymous]
         [HttpPost("register")]
+        
         public IActionResult Register([FromBody]RegisterModel model)
         {
             // map model to entity
