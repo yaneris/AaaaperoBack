@@ -196,5 +196,30 @@ namespace AaaaperoBack.Controllers
             }
             return(candidates);
         }
+        
+        [Authorize(Roles = AccessLevel.Candidate + "," + AccessLevel.Admin)]
+        
+        [HttpGet("Employers")]
+        public List<EmployerDTO> GetEmployers()
+        {
+            var users = _userService.GetAll();
+            var employers = new List<EmployerDTO>();
+            foreach(var user in users)
+            {
+                if(user.Field == "Employer")
+                {
+                    var employer = new EmployerDTO()
+                    {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        email = null,
+                        jobs = null,
+                    };
+
+                    employers.Add(employer);
+                }
+            }
+            return(employers);
+        }
     }
 }
