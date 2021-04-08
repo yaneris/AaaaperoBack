@@ -46,7 +46,7 @@ namespace AaaaperoBack.Controllers
         /// <returns></returns>
                 
         [Authorize]
-        [HttpGet("Candidate/{id}")]
+        [HttpGet("{id}")]
         public ActionResult<CandidateDTO> GetCandidate_byId(int id)
         {
             var candidates = _context.Candidate;

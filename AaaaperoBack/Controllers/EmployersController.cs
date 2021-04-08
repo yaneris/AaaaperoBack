@@ -63,7 +63,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.Admin + "," + Role.Candidate)]
-        [HttpGet("Employer/{id}")]
+        [HttpGet("{id}")]
         public ActionResult<EmployerDTO> GetEmployer_byId(int id)
         {
             var employers = _context.Employer;
