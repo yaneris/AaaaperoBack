@@ -315,6 +315,10 @@ namespace AaaaperoBack.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Make a user premium
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         [HttpPost("Bump")]
         public async Task<IActionResult> Bump()
