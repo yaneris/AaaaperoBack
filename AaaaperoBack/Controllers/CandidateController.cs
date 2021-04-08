@@ -38,59 +38,62 @@ namespace AaaaperoBack.Controllers
         {
             _context = context;
         }
-
+        
         /// <summary>
-        /// Display Employers
+        /// Display the given Candidate
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+                
+        [Authorize]
+        [HttpGet("Candidate/{id}")]
+        public ActionResult<CandidateDTO> GetCandidate_byId(int id)
+        {
+            var candidates = _context.Candidate;
+            var candidate = candidates.SingleOrDefault(x => x.Id == id);
+            if (candidate == null)
+            {
+                return NotFound();
+            }
+            var user = _context.User.Find(candidate.UserId);
+
+            var candidateById = new CandidateDTO()
+            {
+                Id = candidate.Id,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Description = candidate.Description,
+                Skillset = candidate.Skillset,
+                Available = candidate.Available
+            };
+            
+            return candidateById;
+        }
+        
+        /// <summary>
+        /// Display Candidates
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Role.Candidate + "," + Role.Admin)]
-        [HttpGet("Employers")]
-        public ActionResult<EmployersDTO> GetEmployers()
+        [Authorize]
+        [HttpGet]
+        public ActionResult<CandidateDTO> GetCandidates()
         {
-            var employers = from employer in _context.Employer
-                join user in _context.User on employer.UserId equals user.Id
-                select new EmployersDTO
+            var candidates = from candidate in _context.Candidate
+                join user in _context.User on candidate.UserId equals user.Id
+                select new CandidateDTO
                 {
-                    Id = employer.Id,
+                    Id = candidate.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Username = user.Username,
                     Email = user.Email,
-                    Description = employer.Description
+                    Skillset = candidate.Skillset,
+                    Available = candidate.Available,
+                    Description = candidate.Description
                 };
-            return Ok(employers);
-        }
-        
-        /// <summary>
-        /// Display the given Employer
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [Authorize(Roles = Role.Admin + "," + Role.Candidate)]
-        [HttpGet("Employer/{id}")]
-        public ActionResult<EmployerDTO> GetEmployer_byId(int id)
-        {
-            var employers = _context.Employer;
-            var employer = employers.SingleOrDefault(x => x.Id == id);
-            if (employer == null)
-            {
-                return NotFound();
-            }
-            var user = _context.User.Find(employer.UserId);
-            var jobs = _context.Job.ToList().FindAll(x => x.EmployerId == id).OrderBy(x => !x.PremiumAdvertisement).ToList();
-
-            var employerById = new EmployerDTO()
-            {
-                Id = employer.Id,
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Description = employer.Description,
-                Jobs = jobs,
-                Email = user.Email
-            };
-            
-            return employerById;
+            return Ok(candidates);
         }
     }
 }
