@@ -22,17 +22,17 @@ namespace AaaaperoBack.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AdvertisementController : ControllerBase
+    public class JobController : ControllerBase
     {
         private readonly Context _context;
-        public AdvertisementController(Context context)
+        public JobController(Context context)
         {
             _context = context;
         }
         
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<JobDTO>>> GetAdvertisement()
+        public async Task<ActionResult<IEnumerable<JobDTO>>> GetJob()
         {
             var job = from jobs in _context.Job
                 join title in _context.Job on jobs.Id equals title.Id
@@ -51,7 +51,7 @@ namespace AaaaperoBack.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public ActionResult<JobDTO> GetAdvertisement_byId(int id)
+        public ActionResult<JobDTO> GetJob_byId(int id)
          {
              var job = from jobs in _context.Job
                  join title in _context.Job on jobs.Id equals title.Id
@@ -73,6 +73,31 @@ namespace AaaaperoBack.Controllers
  
              return job_byid;
          }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<ActionResult<AddJob>> Add_Job(AddJob jobDTO)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var job = new Job()
+            {
+                Id = jobDTO.Id,
+                EmployerId = jobDTO.EmployerId,
+                Title = jobDTO.Title,
+                Description = jobDTO.Description,
+                Remuneration = jobDTO.Remuneration,
+                PremiumAdvertisement = jobDTO.PremiumAdvertisement
+            };
+            _context.Job.AddAsync(job);
+            _context.SaveChanges();
+            
+            return CreatedAtAction("GetJob", new { id = job.Id}, jobDTO);
+        }
+
      
 
     }
