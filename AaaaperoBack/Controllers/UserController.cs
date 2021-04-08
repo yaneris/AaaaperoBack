@@ -105,8 +105,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        //[Authorize(Roles = AccessLevel.Admin)]
-        [AllowAnonymous]
+        [Authorize(Roles = AccessLevel.Admin)]
         [HttpPost("accesslevel/{id}")]
         public IActionResult ChangeAccess(int id, UpdateAccessLevelDTO model)
         {
@@ -193,18 +192,37 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Soft Delete the given user
+        /// Disable the given admin
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = AccessLevel.Admin)]
-        [HttpDelete("Soft Delete {id}")]
-        public IActionResult SoftDelete(int id)
+        [Authorize(Roles = AccessLevel.SuperUser)]
+        [HttpPost("Disable admin account {id}")]
+        public IActionResult AdminDisable(int id)
         {
             var user = _userService.GetById(id);
             _context.User.Find(id).IsEnabled = false;
             _context.SaveChanges();
             return Ok($"{user.Username} account has been succefully disabled");
+        }
+        
+        /// <summary>
+        /// Disable the given user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = AccessLevel.Admin)]
+        [HttpPost("Disable normal account {id}")]
+        public IActionResult Disable(int id)
+        {
+            var user = _userService.GetById(id);
+            if (user.AccessLevel != AccessLevel.Admin)
+            {
+                _context.User.Find(id).IsEnabled = false;
+                _context.SaveChanges();
+                return Ok($"{user.Username} account has been succefully disabled");
+            }
+            return BadRequest($"{user.Username} is an Admin !");
         }
 
         /// <summary>
