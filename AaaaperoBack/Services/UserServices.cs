@@ -102,7 +102,6 @@ namespace AaaaperoBack.Services
 
             //Saving hashed password into Database table
             user.PasswordHash = computeHash(password);  
-            user.AccessLevel = null;
 
             _context.User.Add(user);
             _context.SaveChanges();

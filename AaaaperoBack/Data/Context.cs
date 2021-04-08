@@ -11,5 +11,11 @@ namespace AaaaperoBack.Data
         public DbSet<Candidate> Candidate { get; set; }
         
         public DbSet<Employer> Employer { get; set; }
+        
+        public DbSet<Message> Message { get; set; }
+        
+        public DbSet<Conversation> Conversation { get; set; }
+        
+        public DbSet<Job> Job { get; set; }
     }
 }
