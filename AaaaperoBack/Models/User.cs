@@ -10,6 +10,7 @@ namespace AaaaperoBack.Models
         public string AccessLevel { get; set; }
         
         public string Field { get; set; }
+        public bool IsEnabled { get; set; }
         public string Token { get; set; }
     }
 }

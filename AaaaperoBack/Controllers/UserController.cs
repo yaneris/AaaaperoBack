@@ -69,6 +69,10 @@ namespace AaaaperoBack.Controllers
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
+            if (!user.IsEnabled)
+            {
+                return BadRequest(new { message = "Your Account has been disabled" });
+            }
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Configuration["Secret"]);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -159,9 +163,11 @@ namespace AaaaperoBack.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-
         
-
+        /// <summary>
+        /// Display all the users
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = AccessLevel.Admin)]
         [HttpGet]
         public IActionResult GetAll()
@@ -170,5 +176,50 @@ namespace AaaaperoBack.Controllers
             var model = _mapper.Map<IList<UserModel>>(users);
             return Ok(model);
         }
+        
+        /// <summary>
+        /// Restore the given deleted user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = AccessLevel.Admin)]
+        [HttpPut("{id}")]
+        public IActionResult Restore(int id)
+        {
+            var user = _userService.GetById(id);
+            _context.User.Find(id).IsEnabled = true;
+            _context.SaveChanges();
+            return Ok($"User {user.Username} account has been succefully enabled");
+        }
+        
+        /// <summary>
+        /// Soft Delete the given user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = AccessLevel.Admin)]
+        [HttpDelete("Soft Delete {id}")]
+        public IActionResult SoftDelete(int id)
+        {
+            var user = _userService.GetById(id);
+            _context.User.Find(id).IsEnabled = false;
+            _context.SaveChanges();
+            return Ok($"{user.Username} account has been succefully disabled");
+        }
+
+        /// <summary>
+        /// Hard Delete the given user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = AccessLevel.Admin)]
+        [HttpDelete("Hard Delete {id}")]
+        public IActionResult HardDelete(int id)
+        {
+            var user = _userService.GetById(id);
+            _userService.Delete(id);
+            return Ok($"{user.Username} account has been succefully deleted from the database");
+        }
+        
     }
 }
