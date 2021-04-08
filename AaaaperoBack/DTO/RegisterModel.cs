@@ -39,5 +39,12 @@ namespace AaaaperoBack.DTO
         ///<example> Password </example>
         [Required]
         public string Password { get; set; }
+
+        ///<summary>
+        ///
+        ///</summary>
+        ///<example> Email </example>
+        [Required]
+        public string email { get; set; }
     }
 }
