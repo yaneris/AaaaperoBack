@@ -121,7 +121,8 @@ namespace AaaaperoBack.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    Token = tokenString
+                    Token = tokenString,
+                    Code = tokenString
                 });
             }
             catch (AppException ex)
@@ -455,6 +456,41 @@ namespace AaaaperoBack.Controllers
         var user = _userService.GetById(id);
         _userService.Delete(id);
         return Ok($"{user.Username} account has been succefully deleted from the database");
+    }
+    //to send an email
+    [AllowAnonymous]
+    [HttpPost("forgotpassword")]
+    public IActionResult ForgotPassword(ForgotPassword model)
+    {
+        return Ok(_userService.ForgotPassword(model.Username));
+    }
+    
+    //to reset 
+    [AllowAnonymous]
+    [HttpPost("ResetPassword")]
+    public IActionResult ResetPassword(ResetPasswordDTO model)
+    {
+        return Ok(_userService.ResetPassword(model.Username,model.EmailToken,model.NewPassword,model.ConfirmNewPassword));
+    }
+    //only for admin
+    [Authorize(Roles = Role.Admin)]
+    [HttpPost("email")]
+    public async Task<IActionResult> SendEmail(SendEmailDTO model)
+    {
+        var emails = new List<string>();
+        foreach (var item in model.emails)
+        {
+            emails.Add(item);
+        }
+        var response = await _emailService.SendEmailAsync(emails, model.Subject, model.Message);
+        if (response.StatusCode == System.Net.HttpStatusCode.Accepted)
+        {
+            return Ok("Email sent " + response.StatusCode);
+        }
+        else
+        {
+            return BadRequest("Email sending failed " + response.StatusCode);
+        }
     }
 }
 }
