@@ -15,6 +15,7 @@ using AaaaperoBack.DTO;
 using AaaaperoBack.Helpers;
 using AaaaperoBack.Models;
 using AaaaperoBack.Services;
+using System.Collections.Generic;
 
 namespace AaaaperoBack.Controllers
 {
@@ -100,12 +101,23 @@ namespace AaaaperoBack.Controllers
             _context.SaveChanges();
             return Ok("User Access Level has been updated!");
         }
-        
-        /// <summary>
-        /// Create a registering model.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
+
+        ///<summary>
+        /// Create a new user
+        ///</summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /user/register
+        ///     {
+        ///         "firstName": "string",
+        ///         "lastName": "string",
+        ///         "field": "Enter "Candidate" or "Employer"",
+        ///         "username": "string",
+        ///         "password": "string"
+        ///     }
+        ///
+        /// </remarks>
         [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register([FromBody]RegisterModel model)
@@ -124,6 +136,17 @@ namespace AaaaperoBack.Controllers
                 // return error message if there was an exception
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        
+
+        [Authorize(Roles = AccessLevel.Admin)]
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var users = _userService.GetAll();
+            var model = _mapper.Map<IList<UserModel>>(users);
+            return Ok(model);
         }
     }
 }
