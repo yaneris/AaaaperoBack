@@ -59,7 +59,7 @@ namespace AaaaperoBack.Controllers
                 return BadRequest(new { message = "Unknown role" });
             // map model to entity
             var user = _mapper.Map<User>(model);
-
+            user.IsEnabled = true;
             try
             {
                 // create user
@@ -78,6 +78,7 @@ namespace AaaaperoBack.Controllers
                             Skillset = "",
                             Available = true,
                             Description = "",
+
                         };
                         _context.Candidate.Add(candidate);
                         _context.SaveChanges();
@@ -212,7 +213,7 @@ namespace AaaaperoBack.Controllers
 
         //[Authorize(Roles = AccessLevel.Admin + "," + AccessLevel.Candidate + "," + AccessLevel.Employer)]
         [AllowAnonymous]
-        [HttpPut("GetMyprofile")]
+        [HttpPut("Myprofile")]
         public async Task<ActionResult> GetMyProfile(UpdateUserDTO model)
         {
             int loggedUserId = int.Parse(User.Identity.Name);
@@ -246,7 +247,7 @@ namespace AaaaperoBack.Controllers
                     candidateDBcan.Available = candidate.Available;
                     candidateDBcan.Description = candidate.Description;
                     await _context.SaveChangesAsync();
-                    return NoContent();
+                    return Ok(candidate);
                 case Role.Employer:
                     var employer = new EmployerDTO
                     {
@@ -265,7 +266,7 @@ namespace AaaaperoBack.Controllers
                     var employerDBemp = _context.Employer.SingleOrDefault(x => x.UserId == loggedUserId);
                     employerDBemp.Description = employer.Description;
                     await _context.SaveChangesAsync();
-                    return NoContent();
+                    return Ok(employer);
                 case Role.Admin:
                     var admin = new UpdateAdminDTO
                     {
@@ -280,7 +281,7 @@ namespace AaaaperoBack.Controllers
                     adminDB.Username = admin.Username;
                     adminDB.Email = admin.Username;
                     await _context.SaveChangesAsync();
-                    return NoContent();
+                    return Ok(admin);
             }
             return NoContent();
         }
@@ -325,14 +326,17 @@ namespace AaaaperoBack.Controllers
             {
                 if (user.Role == "Candidate")
                 {
+                    var canDB = _context.Candidate.SingleOrDefault(x => x.UserId == user.Id);
                     var candidate = new CandidateDTO
                     {
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         Username = user.Username,
-                        Email = null,
-                        Skillset = null,
-                        Available = true
+                        Email = user.Email,
+                        Skillset = canDB.Skillset,
+                        Available = canDB.Available,
+                        Description = canDB.Description
+                        
                     };
 
                     candidates.Add(candidate);
@@ -351,12 +355,14 @@ namespace AaaaperoBack.Controllers
             {
                 if (user.Role == "Employer")
                 {
+                    var empDB = _context.Employer.SingleOrDefault(x => x.UserId == user.Id);
                     var employer = new EmployerDTO()
                     {
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         Username = user.Username,
-                        Email = null,
+                        Email = user.Email,
+                        Description = empDB.Description
                         //ADD JOB !!!
                     };
 
