@@ -405,5 +405,32 @@ namespace AaaaperoBack.Controllers
         _userService.Delete(id);
         return Ok($"{user.Username} account has been succefully deleted from the database");
     }
+    //to send an email
+    [AllowAnonymous]
+    [HttpPost("forgotpassword")]
+    public IActionResult ForgotPassword(ForgotPassword model)
+    {
+        return Ok(_userService.ForgotPassword(model.Username));
+    }
+    //only for admin
+    [Authorize(Roles = Role.Admin)]
+    [HttpPost("email")]
+    public async Task<IActionResult> SendEmail(SendEmailDTO model)
+    {
+        var emails = new List<string>();
+        foreach (var item in model.emails)
+        {
+            emails.Add(item);
+        }
+        var response = await _emailService.SendEmailAsync(emails, model.Subject, model.Message);
+        if (response.StatusCode == System.Net.HttpStatusCode.Accepted)
+        {
+            return Ok("Email sent " + response.StatusCode);
+        }
+        else
+        {
+            return BadRequest("Email sending failed " + response.StatusCode);
+        }
+    }
 }
 }
