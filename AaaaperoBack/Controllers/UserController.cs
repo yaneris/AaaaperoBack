@@ -301,7 +301,7 @@ namespace AaaaperoBack.Controllers
 
                     };
                     return Ok(employer);
-                case Role.Admin:
+                case Role.Admin : case Role.SuperUser :
                 var adminDB = _context.User.Find(loggedUserId);
                     var admin = new UpdateAdminDTO
                     {

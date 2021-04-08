@@ -53,7 +53,7 @@ namespace AaaaperoBack.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin + "," + Role.Candidate + "," + Role.Employer)]
+        [Authorize]
         [HttpGet("{id}")]
         public ActionResult<JobDTO> GetJob_byId(int id)
          {
@@ -83,7 +83,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="jobDTO"></param>
         /// <returns></returns>
 
-        [Authorize(Roles = Role.Admin + "," + Role.Employer)]
+        [Authorize(Roles = Role.Admin + "," + Role.Employer + "," + Role.SuperUser)]
         [HttpPost]
         public async Task<ActionResult<AddJob>> Add_Job(AddJob jobDTO)
         {
@@ -110,7 +110,7 @@ namespace AaaaperoBack.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin + "," + Role.Employer)]
+        [Authorize(Roles = Role.Admin + "," + Role.Employer + "," + Role.SuperUser)]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Job>> Delete_Job(int id)
         {
@@ -130,7 +130,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="id"></param>
         /// <param name="job"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin + "," + Role.Employer)]
+        [Authorize(Roles = Role.Admin + "," + Role.Employer + "," + Role.SuperUser)]
         [HttpPut("{id}")]
         public async Task<ActionResult> Update_Jobs(int id, JobDTO job)
         {
@@ -194,7 +194,7 @@ namespace AaaaperoBack.Controllers
         /// Get all my jobs I am working on
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Role.Candidate + "," + Role.Admin)]
+        [Authorize(Roles = Role.Candidate + "," + Role.Admin + "," + Role.SuperUser)]
         [HttpGet("GetMyJobs")]
         public List<Job> GetMyJobs()
         {

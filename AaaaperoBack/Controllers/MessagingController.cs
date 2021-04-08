@@ -158,7 +158,7 @@ namespace AaaaperoBack.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.Admin + "," + Role.SuperUser)]
         [HttpDelete("DeleteConversation{id}")]
         public IActionResult Delete_Conversation(int id)
         {

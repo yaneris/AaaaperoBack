@@ -106,7 +106,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="rate"></param>
         /// <returns></returns>
         [HttpPost("/rateEmployer")]
-        [Authorize(Roles = Role.Admin + "," + Role.Candidate)]
+        [Authorize(Roles = Role.Admin + "," + Role.Candidate + "," + Role.SuperUser)]
         public async Task<ActionResult> RatingEmployer(int jobId, int rate)
         {
             int loggedUserId = int.Parse(User.Identity.Name);
@@ -135,8 +135,6 @@ namespace AaaaperoBack.Controllers
             {
                 return Ok("Can't find employer for this job");
             }
-
-        
         }
     }
 }

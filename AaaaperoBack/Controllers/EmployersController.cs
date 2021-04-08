@@ -67,7 +67,7 @@ namespace AaaaperoBack.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin + "," + Role.Candidate)]
+        [Authorize(Roles = Role.Admin + "," + Role.Candidate + "," + Role.SuperUser)]
         [HttpGet("{id}")]
         public ActionResult<EmployerDTO> GetEmployer_byId(int id)
         {
@@ -100,7 +100,7 @@ namespace AaaaperoBack.Controllers
         /// Allow an employer to pay a candidate and rate the candidate
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin + "," + Role.Employer)]
+        [Authorize(Roles = Role.Admin + "," + Role.Employer + "," + Role.SuperUser)]
         [HttpPost("PayCandidate")]
         public async Task<ActionResult> PayCandidate(int jobId , int rate)
         {

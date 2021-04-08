@@ -53,7 +53,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.Admin + "," + Role.SuperUser)]
         [HttpPost("Role/{id}")]
         public IActionResult ChangeAccess(int id, UpdateRoleDTO model)
         {
@@ -67,7 +67,7 @@ namespace AaaaperoBack.Controllers
         /// Display all users
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.Admin + "," + Role.SuperUser)]
         [HttpGet("Users")]
         public IActionResult GetAllUsers()
         {
@@ -82,7 +82,7 @@ namespace AaaaperoBack.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.Admin + "," + Role.SuperUser)]
         [HttpPost("Restore_Account/{id}")]
         public IActionResult Restore(int id)
         {
@@ -97,7 +97,7 @@ namespace AaaaperoBack.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.Admin + "," + Role.SuperUser)]
         [HttpPost("Disable_normalAccount/{id}")]
         public IActionResult Disable(int id)
         {
@@ -116,7 +116,7 @@ namespace AaaaperoBack.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.Admin + "," + Role.SuperUser)]
         [HttpDelete("Hard_Delete_Account/{id}")]
         public IActionResult HardDelete(int id)
         {
