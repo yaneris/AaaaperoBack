@@ -136,16 +136,6 @@ namespace AaaaperoBack.Controllers
         /// Authentication method.
         /// </summary>
         /// <param name="model"></param>
-        ///         /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST /user/register
-        ///     {
-        ///         "username": "Username",
-        ///         "password": "Password"
-        ///     }
-        ///
-        /// </remarks>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("Authenticate")]
