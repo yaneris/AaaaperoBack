@@ -107,13 +107,36 @@ namespace AaaaperoBack.Controllers
             {
                 return NotFound();
             }
-            else 
-            {
-                _context.Remove(job);
+            _context.Remove(job);
                 await _context.SaveChangesAsync();
                 return job;
+        }
+        
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update_Books(int id, JobDTO job)
+        {
+            if(id != job.Id || !JobExists(id))
+            {
+                return BadRequest();
+            }
+            else 
+            {
+                var jobs = _context.Job.SingleOrDefault(x => x.Id == id);
+
+                jobs.Id = job.Id;
+                jobs.Description = job.Description;
+                jobs.Title = job.Title;
+                jobs.Remuneration = job.Remuneration;
+                jobs.EmployerId = job.EmployerId;
+                jobs.PremiumAdvertisement = job.PremiumAdvertisement;
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
         }
 
+        private bool JobExists(int id)
+        {
+            return _context.Job.Find(id) != null;
+        }
     }
 }
