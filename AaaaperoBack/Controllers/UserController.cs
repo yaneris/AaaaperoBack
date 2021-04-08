@@ -91,6 +91,7 @@ namespace AaaaperoBack.Controllers
                 Username = user.Username,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Email = user.Email,
                 Token = tokenString
             });
         }
@@ -118,17 +119,51 @@ namespace AaaaperoBack.Controllers
         ///</summary>
         [AllowAnonymous]
         [HttpPost("register")]
-        
         public IActionResult Register([FromBody]RegisterModel model)
         {
+            string[] roles = {"Admin", "SuperUser", "Candidate", "Employer"};
+            if (!Array.Exists(roles, s => s == model.Role))
+                return BadRequest(new { message = "Unknown role" });
             // map model to entity
             var user = _mapper.Map<User>(model);
-
-
+            
             try
             {
                 // create user
                 _userService.Create(user, model.Password);
+                switch (user.Role)
+                {
+                    case AccessLevel.Candidate:
+                        if (!ModelState.IsValid)
+                        {
+                            return BadRequest(ModelState);
+                        }
+
+                        var candidate = new Candidate()
+                        {
+                            UserId = user.Id,
+                            Skillset = "",
+                            Available = true,
+                            Description = "",
+                        };
+                        _context.Candidate.Add(candidate);
+                        _context.SaveChanges();
+                        break;
+                    case AccessLevel.Employer:
+                        if (!ModelState.IsValid)
+                        {
+                            return BadRequest(ModelState);
+                        }
+
+                        var employer = new Employer()
+                        {
+                            UserId = user.Id,
+                            Description = "",
+                        };
+                        _context.Employer.Add(employer);
+                        _context.SaveChanges();
+                        break;
+                }
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(Configuration["Secret"]);
                 var tokenDescriptor = new SecurityTokenDescriptor
@@ -151,6 +186,7 @@ namespace AaaaperoBack.Controllers
                     Username = user.Username,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
+                    Email = user.Email,
                     Token = tokenString
                 });
             }
