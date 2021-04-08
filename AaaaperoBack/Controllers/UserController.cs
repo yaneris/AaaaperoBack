@@ -202,6 +202,10 @@ namespace AaaaperoBack.Controllers
             return Ok("User Access Level has been updated!");
         }
 
+        /// <summary>
+        /// Display all users
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = Role.Admin)]
         [HttpGet("Users")]
         public IActionResult GetAllUsers()
@@ -211,6 +215,11 @@ namespace AaaaperoBack.Controllers
             return Ok(model);
         }
 
+        /// <summary>
+        /// Display profile
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         //[Authorize(Roles = AccessLevel.Admin + "," + AccessLevel.Candidate + "," + AccessLevel.Employer)]
         [AllowAnonymous]
         [HttpPut("Myprofile")]
@@ -316,6 +325,10 @@ namespace AaaaperoBack.Controllers
             return Ok($"{user.Username} account has been succefully disabled");
         }
 
+        /// <summary>
+        /// Display Candidates
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = Role.Employer + "," + Role.Admin)]
         [HttpGet("Candidates")]
         public List<CandidateDTO> GetCandidates()
@@ -345,6 +358,10 @@ namespace AaaaperoBack.Controllers
             return (candidates);
         }
 
+        /// <summary>
+        /// Display Employers
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = Role.Candidate + "," + Role.Admin)]
         [HttpGet("Employers")]
         public List<EmployerDTO> GetEmployers()

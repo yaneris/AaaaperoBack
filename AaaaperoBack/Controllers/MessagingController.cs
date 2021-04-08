@@ -25,6 +25,11 @@ namespace AaaaperoBack.Controllers
             _context = context;
         }
         
+        /// <summary>
+        /// Start a new Conversation
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost("StartConversation")]
         public IActionResult StartConversation(int id)
