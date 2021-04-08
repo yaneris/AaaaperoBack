@@ -5,15 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using AaaaperoBack.Data;
 using Microsoft.EntityFrameworkCore;
 
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using AaaaperoBack.Models;
 using Microsoft.AspNetCore.Authorization;
 using AaaaperoBack.Services;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using AaaaperoBack.DTO;
 using Microsoft.Extensions.Configuration;
 using Advertisement = AaaaperoBack.Models.Job;
@@ -107,8 +103,8 @@ namespace AaaaperoBack.Controllers
                 Remuneration = jobDTO.Remuneration,
                 PremiumAdvertisement = jobDTO.PremiumAdvertisement
             };
-            _context.Job.AddAsync(job);
-            _context.SaveChanges();
+            await _context.Job.AddAsync(job);
+            await _context.SaveChangesAsync();
             
             return CreatedAtAction("GetJob", new { id = job.Id}, jobDTO);
         }
@@ -139,7 +135,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="job"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update_Books(int id, JobDTO job)
+        public async Task<ActionResult> Update_Jobs(int id, JobDTO job)
         {
             if(id != job.Id || !JobExists(id))
             {
