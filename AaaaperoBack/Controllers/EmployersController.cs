@@ -111,7 +111,7 @@ namespace AaaaperoBack.Controllers
 
             if (job.CandidateId != 0)
             {
-                if (job == null)
+                if (employer == null)
                 {
                     
                     return NotFound();
