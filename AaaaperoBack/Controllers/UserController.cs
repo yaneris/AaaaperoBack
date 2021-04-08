@@ -116,19 +116,6 @@ namespace AaaaperoBack.Controllers
         ///<summary>
         /// Create a new user
         ///</summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST /user/register
-        ///     {
-        ///         "firstName": "FirstName",
-        ///         "lastName": "LastName",
-        ///         "field": "Candidate/Employer",
-        ///         "username": "Username",
-        ///         "password": "Password"
-        ///     }
-        ///
-        /// </remarks>
         [AllowAnonymous]
         [HttpPost("register")]
         
