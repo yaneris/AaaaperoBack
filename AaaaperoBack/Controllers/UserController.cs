@@ -170,5 +170,12 @@ namespace AaaaperoBack.Controllers
             var model = _mapper.Map<IList<UserModel>>(users);
             return Ok(model);
         }
+
+        [Authorize(Roles = AccessLevel.Employer)]
+        [HttpGet]
+        public IActionResult GetCandidates()
+        {
+
+        }
     }
 }
