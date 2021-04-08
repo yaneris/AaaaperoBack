@@ -121,7 +121,8 @@ namespace AaaaperoBack.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    Token = tokenString
+                    Token = tokenString,
+                    Code = tokenString
                 });
             }
             catch (AppException ex)
@@ -411,6 +412,14 @@ namespace AaaaperoBack.Controllers
     public IActionResult ForgotPassword(ForgotPassword model)
     {
         return Ok(_userService.ForgotPassword(model.Username));
+    }
+    
+    //to reset 
+    [AllowAnonymous]
+    [HttpPost("ResetPassword")]
+    public IActionResult ResetPassword(ResetPasswordDTO model)
+    {
+        return Ok(_userService.ResetPassword(model.Username,model.EmailToken,model.NewPassword,model.ConfirmNewPassword));
     }
     //only for admin
     [Authorize(Roles = Role.Admin)]

@@ -220,8 +220,10 @@ namespace AaaaperoBack.Services
                 var user = _context.User.SingleOrDefault(x => x.Username == username);
                 if(user != null)
                 {
-                    string token = GenerateRandomCryptographicKey(25);
+                    //20 for the token, not 25
+                    string token = GenerateRandomCryptographicKey(20);
                     user.Token = token;
+                    _context.User.Update(user);
                     _context.SaveChanges();
                     //USER.EMAIL IT WAS A TRAP !!!
                     var emailAddress = new List<string>(){user.Email};
@@ -233,8 +235,9 @@ namespace AaaaperoBack.Services
 
                     if(response.IsCompletedSuccessfully)
                     {
-                        System.Console.WriteLine(emailAddress);
-                        return new string("If your account exists, your new password will be emailed to you shortly");
+                        _context.User.Update(user);
+                        _context.SaveChanges();
+                        return new string("If your account exists, your new password will be emailed to you shortly " + user.Token);
                     }
                 }
                 return new string("If your account exists, your new password will be emailed to you shortly");
@@ -245,14 +248,46 @@ namespace AaaaperoBack.Services
         /// Allow reset password.
         /// </summary>
         /// <param name="username"></param>
-        /// <param name="currentPassword"></param>
+        /// <param name="EmailToken"></param>
         /// <param name="password"></param>
         /// <param name="confirmPassword"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public User ResetPassword(string username, string currentPassword, string password, string confirmPassword)
+        public User ResetPassword(string username, string EmailToken, string password, string confirmPassword)
         {
-            throw new NotImplementedException();
+            if(!string.IsNullOrEmpty(username))
+            {
+                //Find the user by Id
+                var users = _context.User;
+                var user = users.SingleOrDefault(x => x.Username == username);
+                if (user == null)
+                {
+                    throw new AppException("Valid Username is required");
+                }
+
+                if (!string.IsNullOrWhiteSpace(EmailToken))
+                {
+                    
+
+                    if(EmailToken != user.Token)
+                    {
+                        throw new AppException("Invalide Token !" + user.Token);
+                    }
+
+                    if(password != confirmPassword)
+                    {
+                        throw new AppException("Password doesn't match!");
+                    }
+    
+                    //Updating hashed password into Database table
+                    user.PasswordHash = computeHash(password); 
+                }
+                
+                _context.User.Update(user);
+                _context.SaveChanges();
+                return user;
+            }
+            throw new AppException("Valid Username is required");
         }
 
         // helper method to generate random password
