@@ -37,7 +37,7 @@ namespace AaaaperoBack.Controllers
 
             switch (user.Role)
             {
-                case AccessLevel.Employer:
+                case Role.Employer:
                     if (!ModelState.IsValid)
                     {
                         return BadRequest(ModelState);
@@ -53,7 +53,7 @@ namespace AaaaperoBack.Controllers
                     _context.SaveChanges();
                     return Ok(employerMessage);
                 
-                case AccessLevel.Candidate:
+                case Role.Candidate:
                     if (!ModelState.IsValid)
                     {
                         return BadRequest(ModelState);
@@ -88,7 +88,7 @@ namespace AaaaperoBack.Controllers
 
             switch (user.Role)
             {
-                case AccessLevel.Employer:
+                case Role.Employer:
                     if (!ModelState.IsValid)
                     {
                         return BadRequest(ModelState);
@@ -104,7 +104,7 @@ namespace AaaaperoBack.Controllers
                     _context.SaveChanges();
                     return Ok(employerMessage);
                 
-                case AccessLevel.Candidate:
+                case Role.Candidate:
                     if (!ModelState.IsValid)
                     {
                         return BadRequest(ModelState);
