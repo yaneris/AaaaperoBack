@@ -92,5 +92,39 @@ namespace AaaaperoBack.Controllers
             return employerById;
         }
 
+        /// <summary>
+        /// Allow an employer to pay a candidate
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = Role.Admin + "," + Role.Employer)]
+        [HttpPost("PayCandidate")]
+        public async Task<ActionResult> PayCandidate(int jobId)
+        {
+            int loggedUserId = int.Parse(User.Identity.Name);
+            var employer = _context.Employer.Find(loggedUserId);
+            var job = _context.Job.Find(jobId);
+
+            if (job.CandidateId != 0)
+            {
+                if (job == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Remove(job);
+                await _context.SaveChangesAsync();
+
+                return Ok("The payement has been sent.");
+            }
+            else
+            {
+                return Ok("No one is assigned to this job.");
+            }
+
+
+
+
+        }
+
     }
 }

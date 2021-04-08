@@ -12,6 +12,5 @@ namespace AaaaperoBack.DTO
         public string Description { get; set; }
         [Required]
         public int Remuneration { get; set; }
-        public bool PremiumAdvertisement { get; set; }
     }
 }
