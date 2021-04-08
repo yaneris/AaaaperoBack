@@ -45,9 +45,19 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Create an authentication method.
+        /// Authentication method.
         /// </summary>
         /// <param name="model"></param>
+        ///         /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /user/register
+        ///     {
+        ///         "username": "Username",
+        ///         "password": "Password"
+        ///     }
+        ///
+        /// </remarks>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("authenticate")]
@@ -85,7 +95,7 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Create a private link to change the AccessLevel of a user.
+        /// Change the AccessLevel of a user.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
@@ -110,11 +120,11 @@ namespace AaaaperoBack.Controllers
         ///
         ///     POST /user/register
         ///     {
-        ///         "firstName": "string",
-        ///         "lastName": "string",
-        ///         "field": "Enter "Candidate" or "Employer"",
-        ///         "username": "string",
-        ///         "password": "string"
+        ///         "firstName": "FirstName",
+        ///         "lastName": "LastName",
+        ///         "field": "Candidate/Employer",
+        ///         "username": "Username",
+        ///         "password": "Password"
         ///     }
         ///
         /// </remarks>
