@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace AaaaperoBack.Controllers
 {
-    [Authorize(Role.Admin)]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class AdminController : ControllerBase

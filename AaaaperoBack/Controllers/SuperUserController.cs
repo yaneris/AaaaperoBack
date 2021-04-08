@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace AaaaperoBack.Controllers
 {
-    [Authorize(Role.SuperUser)]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class SuperUserController : ControllerBase
