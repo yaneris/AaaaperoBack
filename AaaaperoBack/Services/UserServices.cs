@@ -237,7 +237,7 @@ namespace AaaaperoBack.Services
                     {
                         _context.User.Update(user);
                         _context.SaveChanges();
-                        return new string("If your account exists, your new password will be emailed to you shortly " + user.Token);
+                        return new string("If your account exists, your new password will be emailed to you shortly " );
                     }
                 }
                 return new string("If your account exists, your new password will be emailed to you shortly");
@@ -271,7 +271,7 @@ namespace AaaaperoBack.Services
 
                     if(EmailToken != user.Token)
                     {
-                        throw new AppException("Invalide Token !" + user.Token);
+                        throw new AppException("Invalide Token !" );
                     }
 
                     if(password != confirmPassword)
