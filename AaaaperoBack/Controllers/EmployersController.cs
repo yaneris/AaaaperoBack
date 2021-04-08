@@ -97,7 +97,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Allow an employer to pay a candidate
+        /// Allow an employer to pay a candidate and rate the candidate
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Role.Admin + "," + Role.Employer)]

@@ -98,6 +98,13 @@ namespace AaaaperoBack.Controllers
             return Ok(candidates);
         }
 
+        /// <summary>
+        /// Method which rate the employer need to use a job.
+        /// Use Count and Total Rate
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <param name="rate"></param>
+        /// <returns></returns>
         [HttpPost("/rateEmployer")]
         [Authorize(Roles = Role.Admin + "," + Role.Candidate)]
         public async Task<ActionResult> RatingEmployer(int jobId, int rate)
