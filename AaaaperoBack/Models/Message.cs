@@ -8,17 +8,10 @@ namespace AaaaperoBack.Models
     {
         [Key]
         public int Id { get; set; }
-        [Required]
         public int ConversationId { get; set; }
-        [Required]
         public bool IsSenderEmployer { get; set; }
-        [Required]
         public string Content { get; set; }
         public DateTime CreatedDate { get; set; }
-
-        public Message()
-        {
-            CreatedDate = DateTime.UtcNow;
-        }
+        
     }
 }
