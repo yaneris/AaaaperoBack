@@ -156,8 +156,7 @@ namespace AaaaperoBack.Controllers
         [HttpPost("Accesslevel/{id}")]
         public IActionResult ChangeAccess(int id, UpdateAccessLevelDTO model)
         {
-            // You should check if the user exists or not and then check what is their current access level. As well as you need to create an enum or make sure that user does not pass any 
-            // value except the allowed values which are: NULL, Admin, Support, Student Lead
+            // You should check if the user exists or not and then check what is their current access level.
             _context.User.Find(id).AccessLevel = model.AccessLevel;
             _context.SaveChanges();
             return Ok("User Access Level has been updated!");
