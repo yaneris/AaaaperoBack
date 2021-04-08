@@ -249,7 +249,7 @@ namespace AaaaperoBack.Controllers
                     await _context.SaveChangesAsync();
                     return Ok(candidate);
                 case Role.Employer:
-                    var employer = new EmployerDTO
+                    var employer = new EmployersDTO
                     {
                         FirstName = model.FirstName,
                         LastName = model.LastName,
@@ -347,29 +347,54 @@ namespace AaaaperoBack.Controllers
 
         [Authorize(Roles = Role.Candidate + "," + Role.Admin)]
         [HttpGet("Employers")]
-        public List<EmployerDTO> GetEmployers()
+        public List<EmployersDTO> GetEmployers()
         {
             var users = _userService.GetAll();
-            var employers = new List<EmployerDTO>();
+            var employers = new List<EmployersDTO>();
             foreach (var user in users)
             {
                 if (user.Role == "Employer")
                 {
                     var empDB = _context.Employer.SingleOrDefault(x => x.UserId == user.Id);
-                    var employer = new EmployerDTO()
+                    var employer = new EmployersDTO()
                     {
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         Username = user.Username,
                         Email = user.Email,
                         Description = empDB.Description
-                        //ADD JOB !!!
                     };
 
                     employers.Add(employer);
                 }
             }
             return(employers);
+        }
+        
+        [HttpGet("Employer/{id}")]
+        public ActionResult<EmployerDTO> GetEmployer_byId(int id)
+        {
+            var employers = _context.Employer;
+            var employer = employers.SingleOrDefault(x => x.Id == id);
+            if (employer == null)
+            {
+                return NotFound();
+            }
+            var user = _context.User.Find(employer.UserId);
+            var jobs = _context.Job.ToList().FindAll(x => x.EmployerId == id);
+
+            var employerById = new EmployerDTO()
+            {
+                Id = employer.Id,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Description = employer.Description,
+                Jobs = jobs,
+                Email = user.Email
+            };
+            
+            return employerById;
         }
             
 
