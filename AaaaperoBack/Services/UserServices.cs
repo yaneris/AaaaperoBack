@@ -223,16 +223,17 @@ namespace AaaaperoBack.Services
                     string token = GenerateRandomCryptographicKey(25);
                     user.Token = token;
                     _context.SaveChanges();
-                    
-                    var emailAddress = new List<string>(){username};
+                    //USER.EMAIL IT WAS A TRAP !!!
+                    var emailAddress = new List<string>(){user.Email};
                     var emailSubject = "Password Recovery";
-                    var messageBody = token;
+                    var messageBody = "Token : " + token;
 
                     var response = _emailService.SendEmailAsync(emailAddress,emailSubject,messageBody);
                     System.Console.WriteLine(response.Result.StatusCode);
 
                     if(response.IsCompletedSuccessfully)
                     {
+                        System.Console.WriteLine(emailAddress);
                         return new string("If your account exists, your new password will be emailed to you shortly");
                     }
                 }
