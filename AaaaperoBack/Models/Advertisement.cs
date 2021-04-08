@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace AaaaperoBack.Models
@@ -5,10 +6,14 @@ namespace AaaaperoBack.Models
     public class Advertisement
     {
         [Key]
-        public int AdId { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]
-        public string Content { get; set; }
+        public string Description { get; set; }
+        
+        public DateTime Creation { get; set; }
+        
+        public bool IsOpen { get; set; }
     }
 }
