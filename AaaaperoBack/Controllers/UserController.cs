@@ -45,6 +45,53 @@ namespace AaaaperoBack.Controllers
             _emailService = emailService;
         }
         
+        ///<summary>
+        /// Create a new user
+        ///</summary>
+        [AllowAnonymous]
+        [HttpPost("Register")]
+        
+        public IActionResult Register([FromBody]RegisterModel model)
+        {
+            // map model to entity
+            var user = _mapper.Map<User>(model);
+
+            try
+            {
+                // create user
+                _userService.Create(user, model.Password);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(Configuration["Secret"]);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, user.Id.ToString()),
+                        new Claim(ClaimTypes.Role, user.AccessLevel ?? "null")
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var tokenString = tokenHandler.WriteToken(token);
+
+                // return basic user info and authentication token
+                return Ok(new
+                {
+                    Id = user.Id,
+                    Username = user.Username,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Token = tokenString
+                });
+            }
+            catch (AppException ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        
         /// <summary>
         /// Authentication method.
         /// </summary>
@@ -61,7 +108,7 @@ namespace AaaaperoBack.Controllers
         /// </remarks>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost("authenticate")]
+        [HttpPost("Authenticate")]
         public IActionResult Authenticate(AuthenticateModel model)
         {
             var user = _userService.Authenticate(model.Username, model.Password);
@@ -106,7 +153,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [Authorize(Roles = AccessLevel.Admin)]
-        [HttpPost("accesslevel/{id}")]
+        [HttpPost("Accesslevel/{id}")]
         public IActionResult ChangeAccess(int id, UpdateAccessLevelDTO model)
         {
             // You should check if the user exists or not and then check what is their current access level. As well as you need to create an enum or make sure that user does not pass any 
@@ -116,53 +163,6 @@ namespace AaaaperoBack.Controllers
             return Ok("User Access Level has been updated!");
         }
 
-        ///<summary>
-        /// Create a new user
-        ///</summary>
-        [AllowAnonymous]
-        [HttpPost("register")]
-        
-        public IActionResult Register([FromBody]RegisterModel model)
-        {
-            // map model to entity
-            var user = _mapper.Map<User>(model);
-
-            try
-            {
-                // create user
-                _userService.Create(user, model.Password);
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(Configuration["Secret"]);
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                        new Claim(ClaimTypes.Name, user.Id.ToString()),
-                        new Claim(ClaimTypes.Role, user.AccessLevel ?? "null")
-                    }),
-                    Expires = DateTime.UtcNow.AddDays(7),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var tokenString = tokenHandler.WriteToken(token);
-
-                // return basic user info and authentication token
-                return Ok(new
-                {
-                    Id = user.Id,
-                    Username = user.Username,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Token = tokenString
-                });
-            }
-            catch (AppException ex)
-            {
-                // return error message if there was an exception
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-        
         /// <summary>
         /// Display all the users
         /// </summary>
@@ -182,7 +182,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = AccessLevel.Admin)]
-        [HttpPut("{id}")]
+        [HttpPost("Restore_Account/{id}")]
         public IActionResult Restore(int id)
         {
             var user = _userService.GetById(id);
@@ -197,7 +197,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = AccessLevel.SuperUser)]
-        [HttpPost("Disable admin account {id}")]
+        [HttpPost("Disable_admin_Account/{id}")]
         public IActionResult AdminDisable(int id)
         {
             var user = _userService.GetById(id);
@@ -212,7 +212,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = AccessLevel.Admin)]
-        [HttpPost("Disable normal account {id}")]
+        [HttpPost("Disable_normalAccount/{id}")]
         public IActionResult Disable(int id)
         {
             var user = _userService.GetById(id);
@@ -231,7 +231,7 @@ namespace AaaaperoBack.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = AccessLevel.Admin)]
-        [HttpDelete("Hard Delete {id}")]
+        [HttpDelete("Hard_Delete_Account/{id}")]
         public IActionResult HardDelete(int id)
         {
             var user = _userService.GetById(id);
