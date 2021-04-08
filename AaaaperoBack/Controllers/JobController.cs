@@ -30,6 +30,10 @@ namespace AaaaperoBack.Controllers
             _context = context;
         }
         
+        /// <summary>
+        /// get all job created
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JobDTO>>> GetJob()
@@ -49,6 +53,11 @@ namespace AaaaperoBack.Controllers
             return await job.ToListAsync();
         }
 
+        /// <summary>
+        /// get a special user, we need to put an id in param
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("{id}")]
         public ActionResult<JobDTO> GetJob_byId(int id)
@@ -73,6 +82,12 @@ namespace AaaaperoBack.Controllers
  
              return job_byid;
          }
+        
+        /// <summary>
+        /// method in order to create a new job
+        /// </summary>
+        /// <param name="jobDTO"></param>
+        /// <returns></returns>
 
         [AllowAnonymous]
         [HttpPost]
@@ -98,6 +113,11 @@ namespace AaaaperoBack.Controllers
             return CreatedAtAction("GetJob", new { id = job.Id}, jobDTO);
         }
 
+        /// <summary>
+        /// Method which delete a job take one param id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Job>> Delete_Job(int id)
@@ -112,6 +132,12 @@ namespace AaaaperoBack.Controllers
                 return job;
         }
         
+        /// <summary>
+        /// Modify an existing job by taking an id as parameter
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="job"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<ActionResult> Update_Books(int id, JobDTO job)
         {
