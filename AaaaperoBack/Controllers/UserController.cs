@@ -316,59 +316,68 @@ namespace AaaaperoBack.Controllers
             return Ok($"{user.Username} account has been succefully disabled");
         }
 
-        [Authorize(Roles = Role.Employer + "," + Role.Admin)]
+        [Authorize(Roles = Role.Candidate + "," + Role.Employer + "," + Role.Admin)]
         [HttpGet("Candidates")]
-        public List<CandidateDTO> GetCandidates()
+        public ActionResult<CandidateDTO> GetCandidates()
         {
-            var users = _userService.GetAll();
-            var candidates = new List<CandidateDTO>();
-            foreach (var user in users)
-            {
-                if (user.Role == "Candidate")
+            var candidates = from candidate in _context.Candidate
+                join user in _context.User on candidate.UserId equals user.Id
+                select new CandidateDTO
                 {
-                    var canDB = _context.Candidate.SingleOrDefault(x => x.UserId == user.Id);
-                    var candidate = new CandidateDTO
-                    {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Username = user.Username,
-                        Email = user.Email,
-                        Skillset = canDB.Skillset,
-                        Available = canDB.Available,
-                        Description = canDB.Description
-                        
-                    };
-
-                    candidates.Add(candidate);
-                }
+                    Id = candidate.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Username = user.Username,
+                    Email = user.Email,
+                    Skillset = candidate.Skillset,
+                    Available = candidate.Available,
+                    Description = candidate.Description
+                };
+            return Ok(candidates);
+        }
+        
+        [HttpGet("Candidate/{id}")]
+        public ActionResult<CandidateDTO> GetCandidate_byId(int id)
+        {
+            var candidates = _context.Candidate;
+            var candidate = candidates.SingleOrDefault(x => x.Id == id);
+            if (candidate == null)
+            {
+                return NotFound();
             }
-            return (candidates);
+            var user = _context.User.Find(candidate.UserId);
+
+            var candidateById = new CandidateDTO()
+            {
+                Id = candidate.Id,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Description = candidate.Description,
+                Skillset = candidate.Skillset,
+                Available = candidate.Available
+            };
+            
+            return candidateById;
         }
 
         [Authorize(Roles = Role.Candidate + "," + Role.Admin)]
         [HttpGet("Employers")]
-        public List<EmployersDTO> GetEmployers()
+        public ActionResult<EmployersDTO> GetEmployers()
         {
-            var users = _userService.GetAll();
-            var employers = new List<EmployersDTO>();
-            foreach (var user in users)
-            {
-                if (user.Role == "Employer")
+            var employers = from employer in _context.Employer
+                join user in _context.User on employer.UserId equals user.Id
+                select new EmployersDTO
                 {
-                    var empDB = _context.Employer.SingleOrDefault(x => x.UserId == user.Id);
-                    var employer = new EmployersDTO()
-                    {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Username = user.Username,
-                        Email = user.Email,
-                        Description = empDB.Description
-                    };
-
-                    employers.Add(employer);
-                }
-            }
-            return(employers);
+                    Id = employer.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Username = user.Username,
+                    Email = user.Email,
+                    Description = employer.Description
+                };
+            return Ok(employers);
         }
         
         [HttpGet("Employer/{id}")]
