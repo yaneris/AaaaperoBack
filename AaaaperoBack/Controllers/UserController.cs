@@ -124,6 +124,7 @@ namespace AaaaperoBack.Controllers
             // map model to entity
             var user = _mapper.Map<User>(model);
 
+
             try
             {
                 // create user
@@ -171,24 +172,25 @@ namespace AaaaperoBack.Controllers
             return Ok(model);
         }
 
-        [Authorize(Roles = AccessLevel.Employer + "," + AccessLevel.Admin)]
-        
+        //MODIFIER LES GET
+        /*[Authorize(Roles = AccessLevel.Employer + "," + AccessLevel.Admin)]
         [HttpGet("Candidates")]
-        public List<CandidateDTO> GetCandidates()
+        public List<Candidate> GetCandidates()
         {
             var users = _userService.GetAll();
-            var candidates = new List<CandidateDTO>();
+            var candidates = new List<Candidate>();
             foreach(var user in users)
             {
                 if(user.Field == "Candidate")
                 {
-                    var candidate = new CandidateDTO
+                    var candidate = new Candidate
                     {
                         FirstName = user.FirstName,
                         LastName = user.LastName,
+                        Username = user.Username,
                         email = null,
                         skillset = null,
-                        availability = true
+                        available = true
                     };
 
                     candidates.Add(candidate);
@@ -197,8 +199,8 @@ namespace AaaaperoBack.Controllers
             return(candidates);
         }
         
+        //MODIFIER LES GET
         [Authorize(Roles = AccessLevel.Candidate + "," + AccessLevel.Admin)]
-        
         [HttpGet("Employers")]
         public List<EmployerDTO> GetEmployers()
         {
@@ -212,6 +214,7 @@ namespace AaaaperoBack.Controllers
                     {
                         FirstName = user.FirstName,
                         LastName = user.LastName,
+                        Username = user.Username,
                         email = null,
                         jobs = null,
                     };
@@ -220,6 +223,35 @@ namespace AaaaperoBack.Controllers
                 }
             }
             return(employers);
-        }
+        }*/
+
+        /*[Authorize(Roles = AccessLevel.Candidate + "," + AccessLevel.Admin)]
+        [HttpPut("UpdateCandidate")]
+        public IActionResult UpdateCandidate(int id, UpdateCandidateDTO candidate)
+        {
+            //Finding who is logged in
+            int logged_in_user = int.Parse(User.Identity.Name);
+
+            // map model to entity and set username
+            var user = _mapper.Map<User>(candidate);
+            user.Id = id;
+
+            //Rejecting access if the logged in user is not same as the user updating information
+            if(logged_in_user != id)
+            {
+                return BadRequest(new { message = "Access Denied" });
+            }
+            try
+            {
+                // update user 
+                _userService.Update(user, candidate.CurrentPassword, candidate.NewPassword, candidate.ConfirmNewPassword);
+                return Ok();
+            }
+            catch (AppException ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(new { message = ex.Message });
+            }
+        }*/
     }
 }
