@@ -45,6 +45,6 @@ namespace AaaaperoBack.DTO
         ///</summary>
         ///<example> Email </example>
         [Required]
-        public string email { get; set; }
+        public string Email { get; set; }
     }
 }
