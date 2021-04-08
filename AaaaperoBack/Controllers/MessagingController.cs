@@ -79,7 +79,7 @@ namespace AaaaperoBack.Controllers
         /// <summary>
         /// Get all messages from a conversation
         /// </summary>
-        /// <param name="GetConversation"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
         [HttpGet("{id}")]
