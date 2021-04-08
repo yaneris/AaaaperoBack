@@ -30,7 +30,7 @@ namespace AaaaperoBack.Services
             {
                 // my email address that had been added in sendgrid as an authorized sender
                 
-                From = new EmailAddress("andy.kiuchi@hotmail.com", "Dorset College"),
+                From = new EmailAddress("viteltoosus@hotmail.com", "Dorset College"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
