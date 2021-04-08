@@ -1,6 +1,6 @@
 namespace AaaaperoBack.DTO
 {
-    public class AccessLevel
+    public class Role
     {
         public const string SuperUser = "Super User";
         public const string Admin = "Admin,Super User";
