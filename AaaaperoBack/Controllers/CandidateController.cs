@@ -97,5 +97,39 @@ namespace AaaaperoBack.Controllers
                 var candidatesList = _context.User.ToList().OrderBy(x => x.Premium == true);
             return Ok(candidates);
         }
+
+        [HttpPost("/rateEmployer")]
+        [Authorize(Roles = Role.Admin + "," + Role.Candidate)]
+        public async Task<ActionResult> RatingEmployer(int jobId, int rate)
+        {
+            int loggedUserId = int.Parse(User.Identity.Name);
+            var candidate = _context.Candidate.Find(loggedUserId);
+            var job = _context.Job.Find(jobId);
+            
+
+            if (job.EmployerId != 0)
+            {
+                if (candidate == null)
+                {
+                    
+                    return NotFound();
+                }
+                var employer = _context.Employer.Find(job.EmployerId);
+                employer.Count++;
+                employer.TotalRate = (employer.TotalRate + rate) / employer.Count;
+                
+                
+                _context.Remove(job);
+                await _context.SaveChangesAsync();
+
+                return Ok("Thanks for rating");
+            }
+            else
+            {
+                return Ok("Can't find employer for this job");
+            }
+
+        
+        }
     }
 }
