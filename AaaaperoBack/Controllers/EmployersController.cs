@@ -52,7 +52,9 @@ namespace AaaaperoBack.Controllers
                     LastName = user.LastName,
                     Username = user.Username,
                     Email = user.Email,
-                    Description = employer.Description
+                    Description = employer.Description,
+                    TotalRate = employer.TotalRate,
+                    Count = employer.Count
                 };
 
             var employersList = _context.User.ToList().OrderBy(x => x.Premium == true);
@@ -86,32 +88,38 @@ namespace AaaaperoBack.Controllers
                 LastName = user.LastName,
                 Description = employer.Description,
                 Jobs = jobs,
-                Email = user.Email
+                Email = user.Email,
+                TotalRate = employer.TotalRate,
+                Count = employer.Count
             };
             
             return employerById;
         }
 
         /// <summary>
-        /// Allow an employer to pay a candidate
+        /// Allow an employer to pay a candidate and rate the candidate
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Role.Admin + "," + Role.Employer)]
         [HttpPost("PayCandidate")]
-        public async Task<ActionResult> PayCandidate(int jobId)
+        public async Task<ActionResult> PayCandidate(int jobId , int rate)
         {
             int loggedUserId = int.Parse(User.Identity.Name);
             var employer = _context.Employer.Find(loggedUserId);
             var job = _context.Job.Find(jobId);
+            
 
             if (job.CandidateId != 0)
             {
                 if (job == null)
                 {
+                    
                     return NotFound();
                 }
-
-                _context.Remove(job);
+                var Candidate = _context.Candidate.Find(job.CandidateId);
+                Candidate.Count++;
+                Candidate.TotalRate = (Candidate.TotalRate + rate) / Candidate.Count;
+                
                 await _context.SaveChangesAsync();
 
                 return Ok("The payement has been sent.");
@@ -120,9 +128,6 @@ namespace AaaaperoBack.Controllers
             {
                 return Ok("No one is assigned to this job.");
             }
-
-
-
 
         }
 
