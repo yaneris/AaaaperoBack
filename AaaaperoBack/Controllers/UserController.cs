@@ -390,7 +390,7 @@ namespace AaaaperoBack.Controllers
                 return NotFound();
             }
             var user = _context.User.Find(employer.UserId);
-            var jobs = _context.Job.ToList().FindAll(x => x.EmployerId == id);
+            var jobs = _context.Job.ToList().FindAll(x => x.EmployerId == id).OrderBy(x => !x.PremiumAdvertisement).ToList();
 
             var employerById = new EmployerDTO()
             {
