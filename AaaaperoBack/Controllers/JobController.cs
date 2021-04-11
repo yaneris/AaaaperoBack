@@ -294,6 +294,8 @@ namespace AaaaperoBack.Controllers
             return NoContent();
         }
 
+         
+
         //Check if the job exists in the database.
         private bool JobExists(int id)
         {

@@ -331,5 +331,27 @@ namespace AaaaperoBack.Controllers
 
             return Ok("Account successfully bumped !");
         }
+
+        /// <summary>
+        /// Reset password with the code given via email.
+        /// </summary>
+        /// <returns></returns> 
+        [AllowAnonymous]
+        [HttpPost("ResetPassword")]
+        public IActionResult ResetPassword(ResetPasswordDTO model)
+        {
+            return Ok(_userService.ResetPassword(model.Username,model.EmailToken,model.NewPassword,model.ConfirmNewPassword));
+        }
+
+        /// <summary>
+        /// Sends token to the email linked to your username.
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("ForgotPassword")]
+        public IActionResult ForgotPassword(ForgotPassword model)
+        {
+            return Ok(_userService.ForgotPassword(model.Username));
+        }
     }
 }
