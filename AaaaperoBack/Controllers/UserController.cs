@@ -48,7 +48,7 @@ namespace AaaaperoBack.Controllers
         }
 
         ///<summary>
-        /// Create a new user
+        /// Create a new user.
         ///</summary>
         [AllowAnonymous]
         [HttpPost("register")]
@@ -179,7 +179,7 @@ namespace AaaaperoBack.Controllers
         
 
         /// <summary>
-        /// Display profile
+        /// Allow the logged in user to modify personal informations.
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -258,7 +258,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Display profile
+        /// Display the profile of the logged in user.
         /// </summary>
         /// <returns></returns>
         [Authorize]
@@ -316,7 +316,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Make a user premium
+        /// Make a user premium.
         /// </summary>
         /// <returns></returns>
         [Authorize]

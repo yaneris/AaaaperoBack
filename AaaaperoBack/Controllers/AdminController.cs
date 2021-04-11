@@ -48,7 +48,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Change the Role of a user.
+        /// Change the role of a user.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
@@ -64,7 +64,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Display all users
+        /// Display all users.
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Role.Admin + "," + Role.SuperUser)]
@@ -78,7 +78,7 @@ namespace AaaaperoBack.Controllers
         
 
         /// <summary>
-        /// Restore the given deleted user
+        /// Restore the given deleted user.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -93,7 +93,7 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Disable the given User
+        /// Disable the given user.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -112,7 +112,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Hard Delete the given user
+        /// Hard delete the given user.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

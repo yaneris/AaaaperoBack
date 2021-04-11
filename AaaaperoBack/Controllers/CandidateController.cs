@@ -40,7 +40,7 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Display the given Candidate
+        /// Display a specific candidate.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -73,7 +73,7 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Display Candidates
+        /// Display all candidates.
         /// </summary>
         /// <returns></returns>
         [Authorize]
@@ -99,8 +99,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Method which rate the employer need to use a job.
-        /// Use Count and Total Rate
+        /// Method which rate the given employer from his job advertisement.
         /// </summary>
         /// <param name="jobId"></param>
         /// <param name="rate"></param>

@@ -27,7 +27,7 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// get all job created
+        /// Get all jobs created.
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -49,7 +49,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// get a special user, we need to put an id in param
+        /// Get a specific job advertisement.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -78,7 +78,7 @@ namespace AaaaperoBack.Controllers
          }
         
         /// <summary>
-        /// method in order to create a new job
+        /// Create a new job.
         /// </summary>
         /// <param name="jobDTO"></param>
         /// <returns></returns>
@@ -106,7 +106,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Method which delete a job take one param id
+        /// Delete a specific job.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -125,7 +125,7 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Modify an existing job by taking an id as parameter
+        /// Modify a specific job data.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="job"></param>
@@ -153,7 +153,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Choose a job with its id
+        /// Allow the candidate connected to choose a job.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -191,7 +191,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Get all my jobs I am working on
+        /// Get all the jobs the connected candidate is working on.
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Role.Candidate + "," + Role.Admin + "," + Role.SuperUser)]
@@ -214,7 +214,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Add offer to a candidate
+        /// Add offer to the connected candidate.
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Role.Employer)]
@@ -240,7 +240,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Get all my offers from employers
+        /// Get all my offers from employers.
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Role.Candidate)]
@@ -264,7 +264,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Accept or reject an offer
+        /// Accept or reject an offer.
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Role.Candidate)]
@@ -280,13 +280,13 @@ namespace AaaaperoBack.Controllers
             var jobs = _context.Job;
              var job = jobs.SingleOrDefault(x => x.Id == of.JobId);
 
-            if(offer.AcceptOrReject == "Accept")
+            if(offer.AcceptOrReject == "Accept" || offer.AcceptOrReject == "accept")
             {
                 job.CandidateId = user.Id;
                 _context.Remove(of);
                 await _context.SaveChangesAsync();
             }
-            if(offer.AcceptOrReject == "Reject")
+            if(offer.AcceptOrReject == "Reject" || offer.AcceptOrReject == "reject")
             {
                _context.Remove(of);
                await _context.SaveChangesAsync();
@@ -294,6 +294,7 @@ namespace AaaaperoBack.Controllers
             return NoContent();
         }
 
+        //Check if the job exists in the database.
         private bool JobExists(int id)
         {
             return _context.Job.Find(id) != null;
