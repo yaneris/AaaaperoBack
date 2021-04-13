@@ -26,7 +26,7 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Start a new Conversation
+        /// Create a new conversation.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -60,7 +60,7 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Send a message
+        /// Send a message.
         /// </summary>
         /// <param name="messageDTO"></param>
         /// <returns></returns>
@@ -113,7 +113,7 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Get all messages from a conversation
+        /// Get all messages from a conversation.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -154,7 +154,7 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Delete a conversation
+        /// Delete a conversation.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

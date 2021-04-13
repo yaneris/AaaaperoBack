@@ -48,7 +48,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Disable the given admin
+        /// Disable the given admin account.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

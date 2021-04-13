@@ -228,7 +228,7 @@ namespace AaaaperoBack.Services
                     //USER.EMAIL IT WAS A TRAP !!!
                     var emailAddress = new List<string>(){user.Email};
                     var emailSubject = "Password Recovery";
-                    var messageBody = "Token : " + token;
+                    var messageBody = $"Hello {user.Username}, please find the token in order to reset your password : {token}";
 
                     var response = _emailService.SendEmailAsync(emailAddress,emailSubject,messageBody);
                     System.Console.WriteLine(response.Result.StatusCode);

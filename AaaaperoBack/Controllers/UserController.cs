@@ -48,7 +48,7 @@ namespace AaaaperoBack.Controllers
         }
 
         ///<summary>
-        /// Create a new user
+        /// Create a new user.
         ///</summary>
         [AllowAnonymous]
         [HttpPost("register")]
@@ -179,7 +179,7 @@ namespace AaaaperoBack.Controllers
         
 
         /// <summary>
-        /// Display profile
+        /// Allow the logged in user to modify personal informations.
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -204,7 +204,6 @@ namespace AaaaperoBack.Controllers
                         LastName = model.LastName,
                         Username = model.Username,
                         Email = model.Email,
-                        Skillset = model.Skillset,
                         Available = model.Available,
                         Description = model.Description
                     };
@@ -214,11 +213,10 @@ namespace AaaaperoBack.Controllers
                     candidateDB.Username = candidate.Username;
                     candidateDB.Email = candidate.Email;
                     var candidateDBcan = _context.Candidate.SingleOrDefault(x => x.UserId == loggedUserId);
-                    candidateDBcan.Skillset = candidate.Skillset;
                     candidateDBcan.Available = candidate.Available;
                     candidateDBcan.Description = candidate.Description;
                     await _context.SaveChangesAsync();
-                    return Ok(candidate);
+                    return NoContent();
                 case Role.Employer:
                     var employer = new EmployersDTO
                     {
@@ -258,7 +256,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Display profile
+        /// Display the profile of the logged in user.
         /// </summary>
         /// <returns></returns>
         [Authorize]
@@ -277,13 +275,26 @@ namespace AaaaperoBack.Controllers
                 case Role.Candidate:
                     var candidateDB = _context.User.Find(loggedUserId);
                     var candidateDBcan = _context.Candidate.SingleOrDefault(x => x.UserId == loggedUserId);
+
+                    var skills = _context.SkillSet;
+
+                    var candidateSkills = new List<SkillSet>();
+
+                    foreach (var skill in skills)
+                    {
+                        if(skill.CandidateId == user.Id)
+                        {
+                            candidateSkills.Add(skill);
+                        }
+                    }
+
                     var candidate = new CandidateDTO
                     {
                         FirstName = candidateDB.FirstName,
                         LastName = candidateDB.LastName,
                         Username = candidateDB.Username,
                         Email = candidateDB.Email,
-                        Skillset = candidateDBcan.Skillset,
+                        Skillset = candidateSkills,
                         Available = candidateDBcan.Available,
                         Description = candidateDBcan.Description
                     };
@@ -316,7 +327,7 @@ namespace AaaaperoBack.Controllers
         }
 
         /// <summary>
-        /// Make a user premium
+        /// Make a user premium.
         /// </summary>
         /// <returns></returns>
         [Authorize]
@@ -330,6 +341,28 @@ namespace AaaaperoBack.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Account successfully bumped !");
+        }
+
+        /// <summary>
+        /// Reset password with the code given via email.
+        /// </summary>
+        /// <returns></returns> 
+        [AllowAnonymous]
+        [HttpPost("ResetPassword")]
+        public IActionResult ResetPassword(ResetPasswordDTO model)
+        {
+            return Ok(_userService.ResetPassword(model.Username,model.EmailToken,model.NewPassword,model.ConfirmNewPassword));
+        }
+
+        /// <summary>
+        /// Sends token to the email linked to your username.
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("ForgotPassword")]
+        public IActionResult ForgotPassword(ForgotPassword model)
+        {
+            return Ok(_userService.ForgotPassword(model.Username));
         }
     }
 }

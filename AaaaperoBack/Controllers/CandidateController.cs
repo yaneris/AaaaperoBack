@@ -40,7 +40,7 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Display the given Candidate
+        /// Display a specific candidate.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -57,6 +57,18 @@ namespace AaaaperoBack.Controllers
             }
             var user = _context.User.Find(candidate.UserId);
 
+            var skills = _context.SkillSet;
+
+            var candidateSkills = new List<SkillSet>();
+
+            foreach (var skill in skills)
+            {
+                if (skill.CandidateId == user.Id)
+                {
+                    candidateSkills.Add(skill);
+                }
+            }
+
             var candidateById = new CandidateDTO()
             {
                 Id = candidate.Id,
@@ -65,7 +77,7 @@ namespace AaaaperoBack.Controllers
                 LastName = user.LastName,
                 Email = user.Email,
                 Description = candidate.Description,
-                Skillset = candidate.Skillset,
+                Skillset = candidateSkills,
                 Available = candidate.Available
             };
             
@@ -73,34 +85,42 @@ namespace AaaaperoBack.Controllers
         }
         
         /// <summary>
-        /// Display Candidates
+        /// Display all candidates.
         /// </summary>
         /// <returns></returns>
         [Authorize]
         [HttpGet]
         public ActionResult<CandidateDTO> GetCandidates()
         {
-            var candidates = from candidate in _context.Candidate
-                join user in _context.User on candidate.UserId equals user.Id
-                select new CandidateDTO
-                {
-                    Id = candidate.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Username = user.Username,
-                    Email = user.Email,
-                    Skillset = candidate.Skillset,
-                    Available = candidate.Available,
-                    Description = candidate.Description
-                };
+            var CandSkills = from skills in _context.SkillSet
+                         join user in _context.User on skills.CandidateId equals user.Id
+                         select new SkillSet
+                         {
+                             Id = skills.Id,
+                             Skill = skills.Skill,
+                             CandidateId = user.Id
+                         };
 
-                var candidatesList = _context.User.ToList().OrderBy(x => x.Premium == true);
+            var candidates = from candidate in _context.Candidate
+                             join user in _context.User on candidate.UserId equals user.Id
+                             select new CandidateDTO
+                             {
+                                 Id = candidate.Id,
+                                 FirstName = user.FirstName,
+                                 LastName = user.LastName,
+                                 Username = user.Username,
+                                 Email = user.Email,
+                                 Skillset = CandSkills.Where(x => x.CandidateId == user.Id).ToList(),
+                                 Available = candidate.Available,
+                                 Description = candidate.Description
+                             };
+
+            var candidatesList = _context.User.ToList().OrderBy(x => x.Premium == true);
             return Ok(candidates);
         }
 
         /// <summary>
-        /// Method which rate the employer need to use a job.
-        /// Use Count and Total Rate
+        /// Method which rate the given employer from his job advertisement.
         /// </summary>
         /// <param name="jobId"></param>
         /// <param name="rate"></param>
