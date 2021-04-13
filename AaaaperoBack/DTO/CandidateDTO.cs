@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using AaaaperoBack.DTO;
+using AaaaperoBack.Models;
+
 namespace AaaaperoBack.DTO
 {
     public class CandidateDTO
@@ -7,7 +11,7 @@ namespace AaaaperoBack.DTO
         public string LastName { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
-        public string Skillset { get; set; }
+        public List<SkillSet> Skillset { get; set; }
         public string Description { get; set; }
         public bool Available { get; set; }
         

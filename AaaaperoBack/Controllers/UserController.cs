@@ -204,7 +204,6 @@ namespace AaaaperoBack.Controllers
                         LastName = model.LastName,
                         Username = model.Username,
                         Email = model.Email,
-                        Skillset = model.Skillset,
                         Available = model.Available,
                         Description = model.Description
                     };
@@ -214,11 +213,10 @@ namespace AaaaperoBack.Controllers
                     candidateDB.Username = candidate.Username;
                     candidateDB.Email = candidate.Email;
                     var candidateDBcan = _context.Candidate.SingleOrDefault(x => x.UserId == loggedUserId);
-                    candidateDBcan.Skillset = candidate.Skillset;
                     candidateDBcan.Available = candidate.Available;
                     candidateDBcan.Description = candidate.Description;
                     await _context.SaveChangesAsync();
-                    return Ok(candidate);
+                    return NoContent();
                 case Role.Employer:
                     var employer = new EmployersDTO
                     {
@@ -277,13 +275,26 @@ namespace AaaaperoBack.Controllers
                 case Role.Candidate:
                     var candidateDB = _context.User.Find(loggedUserId);
                     var candidateDBcan = _context.Candidate.SingleOrDefault(x => x.UserId == loggedUserId);
+
+                    var skills = _context.SkillSet;
+
+                    var candidateSkills = new List<SkillSet>();
+
+                    foreach (var skill in skills)
+                    {
+                        if(skill.CandidateId == user.Id)
+                        {
+                            candidateSkills.Add(skill);
+                        }
+                    }
+
                     var candidate = new CandidateDTO
                     {
                         FirstName = candidateDB.FirstName,
                         LastName = candidateDB.LastName,
                         Username = candidateDB.Username,
                         Email = candidateDB.Email,
-                        Skillset = candidateDBcan.Skillset,
+                        Skillset = candidateSkills,
                         Available = candidateDBcan.Available,
                         Description = candidateDBcan.Description
                     };

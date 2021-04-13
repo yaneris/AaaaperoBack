@@ -294,6 +294,29 @@ namespace AaaaperoBack.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Add skills to my candidate profile
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = Role.Candidate)]
+        [HttpPost("AddSkillSet")]
+        public ActionResult<SkillSet> AddSkillSet(SkillSetDTO skill)
+        {
+            int loggedUserId = int.Parse(User.Identity.Name);
+            var user = _context.User.Find(loggedUserId);
+
+            var skillToAdd = new SkillSet
+            {
+                Skill = skill.skill.ToString(),
+                CandidateId = user.Id
+            };
+
+            _context.SkillSet.Add(skillToAdd);
+            _context.SaveChanges();
+
+            return Ok(skillToAdd);
+        }
+
          
 
         //Check if the job exists in the database.
