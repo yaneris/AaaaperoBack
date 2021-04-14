@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SendGrid;
@@ -30,11 +31,13 @@ namespace AaaaperoBack.Services
             {
                 // my email address that had been added in sendgrid as an authorized sender
                 
-                From = new EmailAddress("viteltoosus@hotmail.com", "Dorset College"),
+                From = new EmailAddress("viteltoosus@hotmail.com", "Aaaapero Team"),
                 Subject = subject,
                 PlainTextContent = message,
-                HtmlContent = message
+                HtmlContent = File.ReadAllText("Services/emailDesign.html")
             };
+
+            msg.AddSubstitution("{{Token}}", message);
 
             foreach(var email in emails)
             {

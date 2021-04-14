@@ -228,7 +228,7 @@ namespace AaaaperoBack.Services
                     //USER.EMAIL IT WAS A TRAP !!!
                     var emailAddress = new List<string>(){user.Email};
                     var emailSubject = "Password Recovery";
-                    var messageBody = $"Hello {user.Username}, please find the token in order to reset your password : {token}";
+                    var messageBody = $"{token}";
 
                     var response = _emailService.SendEmailAsync(emailAddress,emailSubject,messageBody);
                     System.Console.WriteLine(response.Result.StatusCode);
@@ -237,10 +237,10 @@ namespace AaaaperoBack.Services
                     {
                         _context.User.Update(user);
                         _context.SaveChanges();
-                        return new string("If your account exists, your new password will be emailed to you shortly " );
+                        return new string("If your account exists, your token will be emailed to you shortly " );
                     }
                 }
-                return new string("If your account exists, your new password will be emailed to you shortly");
+                return new string("If your account exists, your token will be emailed to you shortly");
             }
         }
         
