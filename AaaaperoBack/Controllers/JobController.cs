@@ -114,8 +114,10 @@ namespace AaaaperoBack.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Job>> Delete_Job(int id)
         {
+            int loggedUserId = int.Parse(User.Identity.Name);
+            var user = _context.User.Find(loggedUserId);
             var job = _context.Job.Find(id);
-            if (job == null)
+            if (job == null || job.EmployerId != user.Id)
             {
                 return NotFound();
             }
@@ -134,7 +136,10 @@ namespace AaaaperoBack.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Update_Jobs(int id, JobDTO job)
         {
-            if(id != job.Id || !JobExists(id))
+            int loggedUserId = int.Parse(User.Identity.Name);
+            var user = _context.User.Find(loggedUserId);
+            
+            if(id != job.Id || !JobExists(id) || job.EmployerId != user.Id)
             {
                 return BadRequest();
             }
